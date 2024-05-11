@@ -1,0 +1,71 @@
+enable: false
+interval: 0
+items:
+    - enable: false
+      conditions:
+        - condType: textMatch
+          matchType: matchExact
+          value: 重置送礼次数
+      results:
+        - resultType: replyToSender
+          delay: 0
+          message:
+            - - '{% $m00=0 %}'
+              - 1
+    - enable: true
+      conditions:
+        - condType: textMatch
+          matchType: matchExact
+          value: 查看好感度
+      results:
+        - resultType: replyToSender
+          delay: 0
+          message:
+            - - |-
+                {%
+                $m好感度<=20?`（阶段文案）`,
+                $m好感度<=100&&$m好感度 >=21?`（阶段文案）`,
+                $m好感度<=200&&$m好感度 >=101? `（阶段文案）`,
+                $m好感度<=400&&$m好感度 >=201? `（阶段文案）`,
+                $m好感度<=800&&$m好感度 >=401? `（阶段文案）`,
+                $m好感度<=1600&&$m好感度 >=801? `（阶段文案）`,
+                $m好感度<=3200&&$m好感度 >=1601? `（阶段文案）`,
+                $m好感度<=6400&&$m好感度 >=3201? `（阶段文案）`,
+                $m好感度 >=6401? `（阶段文案）`
+                %}
+                你的当前好感度为{$m好感度}。
+              - 1
+    - enable: true
+      conditions:
+        - condType: textMatch
+          matchType: matchExact
+          value: 重置好感度
+      results:
+        - resultType: replyToSender
+          delay: 0
+          message:
+            - - '{$t玩家}的好感度已清除。'
+              - 1
+        - resultType: replyToSender
+          delay: 0
+          message:
+            - - '{%$m好感度=0%}'
+              - 1
+    - enable: true
+      conditions:
+        - condType: textMatch
+          matchType: matchRegex
+          value: 赠送(.+)
+      results:
+        - resultType: replyToSender
+          delay: 0
+          message:
+            - - "{% if $m00!=$tDate {$m送礼次数=0} %}\n{% if $m00!=$tDate {$m00=$tDate} %}\n{% if 1 {$m送礼次数=$m送礼次数+1} %}\n{$t玩家}本次的成功率为{$t1=D100}/25，\n\n{%\n    $m送礼次数 <=5&&$t1  ==1 ? `（大成功文案），获得{$t2=20+D5}好感度。\\n当前好感度为{$m好感度=$m好感度+$t2}。\\n今日已送礼{$m送礼次数}/5次。`, \n\n$m送礼次数 <=5&&2<=$t1&&$t1<=5 ? `（极难成功文案），获得{$t2=10D2}好感度。\\n当前好感度为{$m好感度=$m好感度+$t2}。\\n今日已送礼{$m送礼次数}/5次。`,\n\n$m送礼次数 <=5&&6<=$t1  &&$t1 <=13 ? `（困难成功文案），获得{$t2=5D3}好感度。\\n当前好感度为{$m好感度=$m好感度+$t2}。\\n今日已送礼{$m送礼次数}/5次。`,\n\n$m送礼次数 <=5 && 14<=$t1  && $t1 <=25 ? `（普通成功），获得{$t2=D10}好感度。\\n当前好感度为{$m好感度=$m好感度+$t2}。\\n今日已送礼{$m送礼次数}/5次。`,\n\n$m送礼次数 <=5&&26<=$t1  &&$t1<=95 ? `（失败文案），好感度不变。\\n当前好感度为{$m好感度=$m好感度+0}。\\n今日已送礼{$m送礼次数}/5次。`,\n\n    $m送礼次数 <=5&&$t1 >=96 ? `（大失败文案），失去{$t2=D5}好感度。\\n当前好感度为{$m好感度=$m好感度-$t2}。\\n今日已送礼{$m送礼次数}/5次。`,\n\n$m送礼次数 >=6 ? `本日{$t玩家}已送礼超过5次，（替换文案）`,\n\n$m送礼次数>=7? `（次数超出文案），失去{$t2=2D5}好感度。\\n当前好感度为{$m好感度=$m好感度-$t2}。`\n\n%}\n\\f\n{%\n$m好感度<=20?`（阶段文案）`,\n\n$m好感度<=100&&$m好感度 >=21?`（阶段文案）`,\n\n$m好感度<=200&&$m好感度 >=101? `（阶段文案）`,\n\n$m好感度<=400&&$m好感度 >=201? `（阶段文案）`,\n\n$m好感度<=800&&$m好感度 >=401? `（阶段文案）`,\n\n$m好感度<=1600&&$m好感度 >=801? `（阶段文案）`,\n\n$m好感度<=3200&&$m好感度 >=1601? `（阶段文案）`,\n\n$m好感度<=6400&&$m好感度 >=3201? `（阶段文案）`,\n\n$m好感度 >=6401? `（阶段文案）`\n\n%}"
+              - 1
+name: 音道修行.yaml
+author:
+    - 无名海豹
+version: ""
+createTimestamp: 1708417211
+updateTimestamp: 1708417211
+desc: ""
