@@ -347,14 +347,14 @@ function parseUserData(input) {
         const characteristics = { ...defaultObj };
         characteristics.cname = parts[0];
         // 处理属性赋值
+        characteristics.HPM = Math.floor((characteristics.con + characteristics.siz) / 10)
+        characteristics.HP = characteristics.HPM;
         for (let i = 1; i < parts.length; i += 2) {
             const key = parts[i];
             const value = parseInt(parts[i + 1], 10);
             characteristics[key] = isNaN(value) ? parts[i + 1] : value; // 如果是数字则转换，否则保持原样
         }
         //计算衍生生属性
-        characteristics.HPM = Math.floor((characteristics.con + characteristics.siz) / 10)
-        characteristics.HP = characteristics.HPM;
         characteristics.MOV = movCompute(characteristics.str, characteristics.siz, characteristics.dex, characteristics.age);
         characteristics.BUILD = buildCompute(characteristics.str, characteristics.siz);
         characteristics.DB = dbCompute(characteristics.BUILD);
