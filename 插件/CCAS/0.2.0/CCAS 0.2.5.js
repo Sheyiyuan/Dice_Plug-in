@@ -156,23 +156,27 @@ function Roll(ruleCOC, checkValue, BP = 0, difficulty = 1) {
   n = Math.abs(BP);
   const Dice = [];
   if (geww + uiww !== 0) {
-    Dice[0] = geww + uiww;
+    Dice[0] = Number(geww + uiww)
   } else {
-    Dice[0] = 100;
+    Dice[0] = 100
   }
+  let mindice = Dice[0]
+  let maxdice = Dice[0]
   for (let i = 0; i < n; i++) {
-    result = D(1, 10, 10) + geww;
+    result = D(1, 10, 10, -1) + geww
     if (result === 0) {
-      result = 100;
-    } else {
-      result;
+      result = 100
     }
-    Dice.push(result);
+    mindice = Math.min(mindice, result)
+    maxdice = Math.max(maxdice, result)
+    //Dice.push(Number(result));
   }
   if (BP >= 0) {
-    result = Math.min(Dice);
+    result = mindice
+    //result = Math.min(Dice);
   } else {
-    result = Math.max(Dice);
+    result = maxdice
+    //result = Math.max(Dice);
   }
   let criticalSuccessValue, fumbleValue;
   if (ruleCOC === 0) {
