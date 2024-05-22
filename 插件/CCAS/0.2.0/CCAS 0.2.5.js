@@ -479,7 +479,7 @@ function list(arr) {
 let ext = seal.ext.find('Combat&Chases Assist System');
 if (!ext) {
   // 不存在，那么建立扩展，名为，作者“”，版本1.0.0
-  ext = seal.ext.new('Combat&Chases Assist System', '社亦园 冰红茶', '0.2.3');
+  ext = seal.ext.new('Combat&Chases Assist System', '社亦园 冰红茶', '0.2.5');
   // 注册扩展
   seal.ext.register(ext);
 }
@@ -1418,10 +1418,10 @@ ext.cmdMap['atk'] = cmdAtk;
 //战技代骰
 //.skill # atker skill aimer (infect)
 //.skill skill aimer (infect) //(pl用)
-const cmd = seal.ext.newCmdItemInfo();
-cmd.name = 'skill'; // 指令名字，可用中文
-cmd.help = '';
-cmd.solve = (ctx, msg, cmdArgs) => {
+const cmdSkill = seal.ext.newCmdItemInfo();
+cmdSkill.name = 'skill'; // 指令名字，可用中文
+cmdSkill.help = '';
+cmdSkill.solve = (ctx, msg, cmdArgs) => {
   let val = cmdArgs.getArgN(1);
   switch (val) {
     case 'help': {
@@ -1513,7 +1513,7 @@ cmd.solve = (ctx, msg, cmdArgs) => {
         // setnpc
         atktrans += "\n" + "\n[]";
         seal.vars.strSet(ctx, `$gCCAS单位数据录入`, atktrans);
-      } else if (val === "%") { 
+      } else if (val === "%") {
         let atkername = cmdArgs.getArgN(2)
         let atkerskill = cmdArgs.getArgN(3)
         let aimername = cmdArgs.getArgN(4)
@@ -1630,4 +1630,4 @@ cmd.solve = (ctx, msg, cmdArgs) => {
   }
 };
 // 将命令注册到扩展中
-ext.cmdMap['skill'] = cmd;
+ext.cmdMap['skill'] = cmdSkill;
