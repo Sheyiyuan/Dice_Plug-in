@@ -14,9 +14,9 @@
 1. 通用基本功能 v
   1.1 判定建立战斗与追逐
   1.2 NPC 数据录入
-2. 战斗辅助系统
-  2.1 自动敏捷排序 v
-    2.1.1 直接排序（中途加入自动计算
+2. 战斗辅助系统 v
+  2.1 自动敏捷排序
+    2.1.1 直接排序
     2.1.2 含有突袭的排序
     2.1.3 含有先攻检定的排序
   2.2 自动计算伤害
@@ -275,6 +275,7 @@ function Roll(ruleCOC, checkValue, BP = 0, difficulty = 1) {
   } else {
     rollResult.push(0);
   }
+  rollResult.push(`检定结果为: D100=${result}/${checkValue},${successdiscription[successRank]}`)
   return rollResult
 }
 
