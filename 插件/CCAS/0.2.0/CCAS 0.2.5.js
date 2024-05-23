@@ -410,6 +410,7 @@ function qsortRoll(data) {
     dex = data[i].dex;
     dice = Roll(2, dex);
     data[i].检定结果 = dice;
+    data[i].检定结果文本 = dice[4];
   }
   data.sort(function cmp(a, b) {
     if (b.检定结果[2] === a.检定结果[2]) {
@@ -443,7 +444,7 @@ function ranksRoll(arr) {
     rankList += "敏捷：" + arr[i].dex + "    力量：" + arr[i].str + "    体型：" + arr[i].siz + "\n";
     rankList += "体格：" + arr[i].BUILD + "    db：" + arr[i].DB[0];
     if (arr[i].DB[1] !== 1) rankList += "d" + arr[i].DB[1];
-    rankList += "\n" + "斗殴：" + arr[i].斗殴 + "    闪避：" + arr[i].闪避 + "    手枪：" + arr[i].手枪 + "\n敏捷检定：" + arr[i].检定结果 + "\n==========================\n";
+    rankList += "\n" + "斗殴：" + arr[i].斗殴 + "    闪避：" + arr[i].闪避 + "    手枪：" + arr[i].手枪 + "\n敏捷检定：" + arr[i].检定结果文本 + "\n==========================\n";
   }
   return rankList;
 }
