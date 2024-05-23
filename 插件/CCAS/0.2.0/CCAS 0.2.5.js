@@ -553,7 +553,7 @@ cmdDeleteNPC.help = `删除指定数量的单位（1到20之间）:
 .deletenpc 3 单位A 单位B 单位C
 或者，如果只删除一个特定单位，且该单位名称中不含空格，可以直接输入单位名称作为第一个参数：单位名称
 例如，仅删除一个名为“单位D”的单位：
-.deletempc 单位D`
+.deletenpc 单位D`
 cmdDeleteNPC.solve = (ctx, msg, cmdArgs) => {
   let val = cmdArgs.getArgN(1);
   switch (val) {
@@ -566,50 +566,48 @@ cmdDeleteNPC.solve = (ctx, msg, cmdArgs) => {
       if ((val >= 1 && val <= 20) || cmdArgs.getArgN(2) === "") {
         //确认要删去的单位的数量与名称
         let inputcount = 1;
-        let bin;
-        if ((val >= 1 && val <= 20)) {
-          let input = '';
-          let transfer = "";
-          while (val--) {
-            input = cmdArgs.getArgN(++inputcount);
-            transfer += input + "\n";
+        const bin = []
+        if (val >= 1 && val <= 20) {
+          for (let putnum = 0; putnum < val; putnum++) {
+            let input = cmdArgs.getArgN(++inputcount)
+            bin.push(input)
           }
-          bin = transfer.split('\n');
         }
         else {
-          if (cmdArgs.getArgN(2) === "") {
-            let transfer = val + "\n";
-            bin = transfer.split("\n");
-          }
+          bin.push(val)
         }
         //从线上读取已储存的参战单位数据到本地
         let textOL = seal.vars.strGet(ctx, `$gCCAS单位数据录入`)[0]
-        const lines = textOL.split('\n');
-        //查找要删除的对象并删除
-        let deletetransferer = textOL.split('[');
-        let deleteTransfer = deletetransferer[0].trim();
-        let dataline = deleteTransfer.split('\n');
-        let transtext = "";
-        for (const initline of dataline) {
-          let lineparts = initline.trim().split(' ');
-          let leaveline = 1;
-          for (let judgenumber = 0; judgenumber < bin.length; judgenumber++) {
-            if (lineparts[0] === bin[judgenumber]);
-            leaveline = 0;
+        let pls = parseUserData(textOL)
+        let backtext = textOL.trim().split("\n")
+        const leavetext = []
+        for (let plnum = 0; plnum < pls.length; plnum++) {
+          let leaveline = 1
+          for (let binnum = 0; binnum < bin.length; binnum++) {
+            if (pls[plnum].cname === bin[binnum]) {
+              leaveline = 0
+            }
           }
-          if (leaveline) {
-            transtext += initline + "\n";
+          leavetext.push(leaveline)
+        }
+        let transtext = ""
+        for (let plnum = 0; plnum < pls.length; plnum++) { 
+          if (leavetext[plnum]) { 
+            transtext += pls[plnum].cname + ` `
+            for (var key in pls[plnum]) { 
+              transtext += key + ` ` + pls[plnum][key] + ` `
+            }
+            transtext += `\n`
           }
         }
-        transtext = transtext.trim();
         let textNew = transtext;
         // combat new
         const sora = [];
-        seal.vars.strSet(ctx, `$gCCAS单位数据录入`, JSON.stringify(sora));
+        seal.vars.strSet(ctx, `$gCCAS单位数据录入`, JSON.stringify(sora))
         // setnpc
         textNew += "\n" + "\n[]";
         seal.vars.strSet(ctx, `$gCCAS单位数据录入`, textNew);
-        seal.replyToSender(ctx, msg, `已删除${bin}共${bin.length - 1}名NPC`);
+        seal.replyToSender(ctx, msg, `已删除${bin}共${bin.length}名NPC`)
         return seal.ext.newCmdExecuteResult(true);
       }
       else {
