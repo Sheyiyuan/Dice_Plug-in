@@ -351,16 +351,21 @@ function parseUserData(input) {
     // 创建默认对象
     const characteristics = { ...defaultObj };
     characteristics.cname = parts[0];
-    //计算衍生属性
-    characteristics.HPM = Math.floor((characteristics.con + characteristics.siz) / 10)
-    characteristics.HP = characteristics.HPM;
+    // 处理HP属性
+    let HPfinded = false;
     // 处理属性赋值
     for (let i = 1; i < parts.length; i += 2) {
       const key = parts[i];
+      //如果这里没有给HP赋值，就在下面赋值
+      if (key === "HP")
+        HPfinded = true;
       const value = parseInt(parts[i + 1], 10);
       characteristics[key] = isNaN(value) ? parts[i + 1] : value; // 如果是数字则转换，否则保持原样
     }
-    // 计算其余衍生属性
+    // 计算衍生属性
+    characteristics.HPM = Math.floor((characteristics.con + characteristics.siz) / 10)
+    if(!HPfinded)
+      characteristics.HP = Math.floor((characteristics.con + characteristics.siz) / 10)
     characteristics.MOV = movCompute(characteristics.str, characteristics.siz, characteristics.dex, characteristics.age);
     characteristics.BUILD = buildCompute(characteristics.str, characteristics.siz);
     characteristics.DB = dbCompute(characteristics.BUILD);
