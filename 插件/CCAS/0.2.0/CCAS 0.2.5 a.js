@@ -626,7 +626,9 @@ const cmd = seal.ext.newCmdItemInfo();
 cmd.name = 'modify'; // 指令名字，可用中文
 cmd.help = `.modify指令用于修改npc属性
 输入格式：.modify 单位名称 属性名称 属性值
-特别注意：体格，DB，最大生命值无法修改修改生命值时属性名称请填写HP（大写）`;
+特别注意：体格，DB，最大生命值无法修改，修改生命值时属性名称请填写HP（大写）
+修改其他基础属性时请填写属性的英文简称（例如力量是str）（小写）
+（如果不满可以@开发者催更）`;
 cmd.solve = (ctx, msg, cmdArgs) => {
   let val = cmdArgs.getArgN(1);
   switch (val) {
