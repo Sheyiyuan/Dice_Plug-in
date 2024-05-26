@@ -1442,7 +1442,14 @@ ext.cmdMap['atk'] = cmdAtk;
 //.skill skill aimer (infect) //(pl用)
 const cmdSkill = seal.ext.newCmdItemInfo();
 cmdSkill.name = 'skill'; // 指令名字，可用中文
-cmdSkill.help = '';
+cmdSkill.help = `.skill指令可用于代骰战技
+  使用方法：.skill 模式 攻击者 技能 攻击目标
+
+  模式为\`#\`时，攻击目标可以闪避或反击，此时填写的攻击目标部分应形如\`张三 闪避\`或\`张三 反击 1d4\`,此处使用反击默认对对方斗殴技能进行检定
+  若省略攻击目标的应对方案，视为攻击目标不进行或无法进行闪避或反击，此时攻击目标部分值包含攻击目标的名称
+
+  除此之外，当不填写模式时，指令将变为.skill 技能 攻击目标
+  此时将把指令发出者作为攻击者，除此之外的部分和模式\`#\`一致`;
 cmdSkill.solve = (ctx, msg, cmdArgs) => {
   let val = cmdArgs.getArgN(1);
   switch (val) {
@@ -1515,6 +1522,11 @@ cmdSkill.solve = (ctx, msg, cmdArgs) => {
                     else
                       seal.replyToSender(ctx, msg, `${atkername}承受${punishroll}个惩罚骰，${atkerroll[0]}/${atkerroll[1]}${successdiscription[atkerroll[2]]}\n${aimername}的反击${aimerroll[0]}/${aimerroll[1]}${successdiscription[aimerroll[2]]}\n反击成功，造成${totaldamage}伤害\n${atkername}生命值归零，战技使用失败`)
                   }
+                } else {
+                  if (atkerroll[2] >= 2)
+                    seal.replyToSender(ctx, msg, `${atkername}承受${punishroll}个惩罚骰，${atkerroll[0]}/${atkerroll[1]}${successdiscription[atkerroll[2]]}\n战技使用成功，请玩家自行修改效果`)
+                  else
+                    seal.replyToSender(ctx, msg, `${atkername}承受${punishroll}个惩罚骰，${atkerroll[0]}/${atkerroll[1]}${successdiscription[atkerroll[2]]}\n战技使用失败`)
                 }
               }
             }
@@ -1625,6 +1637,11 @@ cmdSkill.solve = (ctx, msg, cmdArgs) => {
                     else
                       seal.replyToSender(ctx, msg, `${atkername}承受${punishroll}个惩罚骰，${atkerroll[0]}/${atkerroll[1]}${successdiscription[atkerroll[2]]}\n${aimername}的反击${aimerroll[0]}/${aimerroll[1]}${successdiscription[aimerroll[2]]}\n反击成功，造成${totaldamage}伤害\n${atkername}生命值归零，战技使用失败`)
                   }
+                } else {
+                  if (atkerroll[2] >= 2)
+                    seal.replyToSender(ctx, msg, `${atkername}承受${punishroll}个惩罚骰，${atkerroll[0]}/${atkerroll[1]}${successdiscription[atkerroll[2]]}\n战技使用成功，请玩家自行修改效果`)
+                  else
+                    seal.replyToSender(ctx, msg, `${atkername}承受${punishroll}个惩罚骰，${atkerroll[0]}/${atkerroll[1]}${successdiscription[atkerroll[2]]}\n战技使用失败`)
                 }
               }
             }
@@ -1653,24 +1670,3 @@ cmdSkill.solve = (ctx, msg, cmdArgs) => {
 };
 // 将命令注册到扩展中
 ext.cmdMap['skill'] = cmdSkill;
-
-//============================================================================================//
-const cmdChase = seal.ext.newCmdItemInfo();
-cmd.name = ''; // 指令名字，可用中文
-cmd.help = '';
-cmd.solve = (ctx, msg, cmdArgs) => {
-  let val = cmdArgs.getArgN(1);
-  switch (val) {
-    case 'help': {
-      const ret = seal.ext.newCmdExecuteResult(true);
-      ret.showHelp = true;
-      return ret;
-    }
-    default: {
-
-      return seal.ext.newCmdExecuteResult(true);
-    }
-  }
-};
-// 将命令注册到扩展中
-ext.cmdMap[''] = cmd;   
