@@ -364,7 +364,7 @@ function parseUserData(input) {
     }
     // 计算衍生属性
     characteristics.HPM = Math.floor((characteristics.con + characteristics.siz) / 10)
-    if(!HPfinded)
+    if (!HPfinded)
       characteristics.HP = Math.floor((characteristics.con + characteristics.siz) / 10)
     characteristics.MOV = movCompute(characteristics.str, characteristics.siz, characteristics.dex, characteristics.age);
     characteristics.BUILD = buildCompute(characteristics.str, characteristics.siz);
@@ -591,10 +591,10 @@ cmdDeleteNPC.solve = (ctx, msg, cmdArgs) => {
           leavetext.push(leaveline)
         }
         let transtext = ""
-        for (let plnum = 0; plnum < pls.length; plnum++) { 
-          if (leavetext[plnum]) { 
+        for (let plnum = 0; plnum < pls.length; plnum++) {
+          if (leavetext[plnum]) {
             transtext += pls[plnum].cname + ` `
-            for (var key in pls[plnum]) { 
+            for (var key in pls[plnum]) {
               transtext += key + ` ` + pls[plnum][key] + ` `
             }
             transtext += `\n`
@@ -620,6 +620,30 @@ cmdDeleteNPC.solve = (ctx, msg, cmdArgs) => {
 ext.cmdMap['deletenpc'] = cmdDeleteNPC;
 
 //============================================================================================//
+const cmdClear = seal.ext.newCmdItemInfo();
+cmdClear.name = 'ccasclear'; // 指令名字，可用中文
+cmdClear.help = '';
+cmdClear.solve = (ctx, msg, cmdArgs) => {
+  let val = cmdArgs.getArgN(1);
+  switch (val) {
+    case 'help': {
+      const ret = seal.ext.newCmdExecuteResult(true);
+      ret.showHelp = true;
+      return ret;
+    }
+    default: {
+      const sora = [];
+      let ___rule = 1;
+      seal.vars.strSet(ctx, `$gCCAS单位数据录入`, JSON.stringify(sora));
+      seal.vars.strSet(ctx, `$gCCAS战斗规则录入`, JSON.stringify(___rule));
+      seal.replyToSender(ctx, msg, `数据已清空`);
+      return seal.ext.newCmdExecuteResult(true);
+    }
+  }
+};
+// 将命令注册到扩展中
+ext.cmdMap['ccasclear'] = cmdClear;
+//============================================================================================//
 
 //设置默认战斗规则
 let ruleCombat = 1
@@ -633,15 +657,11 @@ cmdCombat.help = `a. 设置战斗规则
        2: 含有先发制人（突袭）的战斗排序，参考setnpc与setpc指令
        3: 含有先攻检定的战斗排序
        
-       b.清空数据
-       格式: .combat new 
-       描述: 清除所有参战单位的数据，重置为初始状态。
-       
-       c.排序行动顺序
+       b.排序行动顺序
        格式: .combat rank
        描述: 根据当前存储的参战单位数据，自动排序并显示行动顺序。
        
-       d.列出参战单位
+       c.列出参战单位
        格式: .combat list
        描述: 列出所有已加入战斗的单位列表。`
 cmdCombat.solve = (ctx, msg, cmdArgs) => {
@@ -658,115 +678,108 @@ cmdCombat.solve = (ctx, msg, cmdArgs) => {
         seal.replyToSender(ctx, msg, `战斗规则${ruleCombat}已启用。`);
         seal.vars.strSet(ctx, '$gCCAS战斗规则录入', val);
       } else {
-        if (val === 'new') {
-          const sora = [];
-          let ___rule = 1;
-          seal.vars.strSet(ctx, `$gCCAS单位数据录入`, JSON.stringify(sora));
-          seal.vars.strSet(ctx, `$gCCAS战斗规则录入`, JSON.stringify(___rule));
-          seal.replyToSender(ctx, msg, `数据已清空`);
-        } else {
-          if (val === 'rank') {
-            let rankCCCharacters = parseUserData(seal.vars.strGet(ctx, `$gCCAS单位数据录入`)[0]);
-            let ranktype = JSON.parse(seal.vars.strGet(ctx, '$gCCAS战斗规则录入')[0]);
-            let ruleCOC = ctx.group.cocRuleIndex;
-            let rank_method = cmdArgs.getArgN(2);
-            if (ranktype === 3) {
-              qsortRoll(rankCCCharacters, 0, rankCCCharacters.length - 1);
-              let resultRank;
-              if (rank_method === "simple") {
-                resultRank = simple_ranksRoll(rankCCCharacters);
-              }
-              else {
-                resultRank = ranksRoll(rankCCCharacters);
-              }
-              seal.replyToSender(ctx, msg, `行动顺序：\n${resultRank}`);
+        if (val === 'rank') {
+          let rankCCCharacters = parseUserData(seal.vars.strGet(ctx, `$gCCAS单位数据录入`)[0]);
+          let ranktype = JSON.parse(seal.vars.strGet(ctx, '$gCCAS战斗规则录入')[0]);
+          let ruleCOC = ctx.group.cocRuleIndex;
+          let rank_method = cmdArgs.getArgN(2);
+          if (ranktype === 3) {
+            qsortRoll(rankCCCharacters, 0, rankCCCharacters.length - 1);
+            let resultRank;
+            if (rank_method === "simple") {
+              resultRank = simple_ranksRoll(rankCCCharacters);
             }
-            else if (ranktype === 1 || rank_method === "simple" || rank_method === "") {
+            else {
+              resultRank = ranksRoll(rankCCCharacters);
+            }
+            seal.replyToSender(ctx, msg, `行动顺序：\n${resultRank}`);
+          }
+          else if (ranktype === 1 || rank_method === "simple" || rank_method === "") {
+            qsort(rankCCCharacters, 0, rankCCCharacters.length - 1);
+            let resultRank;
+            if (rank_method === "simple") {
+              resultRank = simple_ranks(rankCCCharacters);
+            }
+            else {
+              resultRank = ranks(rankCCCharacters);
+            }
+            seal.replyToSender(ctx, msg, `行动顺序：\n${resultRank}`);
+          }
+          // 带突袭的检定，格式为.combat rank 张三(cname) 50(成功率)
+          else if (ranktype === 2) {
+            if (rank_method >= 1 && rank_method <= 20) {
+              let inputcount = 2;
+              let membercount = rank_method;
+              let checklist = "";
               qsort(rankCCCharacters, 0, rankCCCharacters.length - 1);
-              let resultRank;
-              if (rank_method === "simple") {
-                resultRank = simple_ranks(rankCCCharacters);
-              }
-              else {
-                resultRank = ranks(rankCCCharacters);
-              }
-              seal.replyToSender(ctx, msg, `行动顺序：\n${resultRank}`);
-            }
-            // 带突袭的检定，格式为.combat rank 张三(cname) 50(成功率)
-            else if (ranktype === 2) {
-              if (rank_method >= 1 && rank_method <= 20) {
-                let inputcount = 2;
-                let membercount = rank_method;
-                let checklist = "";
-                qsort(rankCCCharacters, 0, rankCCCharacters.length - 1);
-                while (1) {
-                  let nowinput = cmdArgs.getArgN(++inputcount);
-                  if (nowinput === "" || nowinput === "simple") {
-                    rank_method = nowinput;
-                    break;
-                  }
-                  else {
-                    let checkname = nowinput;
-                    let checkpossiblity;
-                    if (cmdArgs.getArgN(inputcount + 1) >= 1 && cmdArgs.getArgN(inputcount + 1) <= 100)
-                      checkpossiblity = cmdArgs.getArgN(++inputcount);
-                    else
-                      checkpossiblity = 100;
-                    let checkrollresult = Roll(ruleCOC, checkpossiblity);
-                    checklist += `${checkname}的突袭检定结果${checkrollresult[0]}/${checkrollresult[1]}${successdiscription[checkrollresult[2]]}\n`;
-                    if (checkrollresult[3] === 1) {
-                      rankCCCharacters = sfind(rankCCCharacters, checkname);
-                    }
+              while (1) {
+                let nowinput = cmdArgs.getArgN(++inputcount);
+                if (nowinput === "" || nowinput === "simple") {
+                  rank_method = nowinput;
+                  break;
+                }
+                else {
+                  let checkname = nowinput;
+                  let checkpossiblity;
+                  if (cmdArgs.getArgN(inputcount + 1) >= 1 && cmdArgs.getArgN(inputcount + 1) <= 100)
+                    checkpossiblity = cmdArgs.getArgN(++inputcount);
+                  else
+                    checkpossiblity = 100;
+                  let checkrollresult = Roll(ruleCOC, checkpossiblity);
+                  checklist += `${checkname}的突袭检定结果${checkrollresult[0]}/${checkrollresult[1]}${successdiscription[checkrollresult[2]]}\n`;
+                  if (checkrollresult[3] === 1) {
+                    rankCCCharacters = sfind(rankCCCharacters, checkname);
                   }
                 }
+              }
+              if (rank_method === "simple")
+                resultRank = simple_ranks(rankCCCharacters);
+              else
+                resultRank = ranks(rankCCCharacters);
+              seal.replyToSender(ctx, msg, `${checklist}行动顺序：\n${resultRank}`);
+            }
+            else {
+              let sup_name = cmdArgs.getArgN(2);
+              let sup_rate = cmdArgs.getArgN(3);
+              rank_method = cmdArgs.getArgN(3);
+              if (sup_rate === "" || rank_method === "simple")
+                sup_rate = 100;
+              if (rank_method !== "simple")
+                rank_method = cmdArgs.getArgN(4);
+              let sup_level = Roll(ruleCOC, sup_rate);
+              if (sup_level[3] === 0) {
+                //失败
+                qsort(rankCCCharacters, 0, rankCCCharacters.length - 1);
+                let resultRank;
                 if (rank_method === "simple")
                   resultRank = simple_ranks(rankCCCharacters);
                 else
                   resultRank = ranks(rankCCCharacters);
-                seal.replyToSender(ctx, msg, `${checklist}行动顺序：\n${resultRank}`);
+                seal.replyToSender(ctx, msg, `突袭检定${sup_level[0]}\/${sup_level[1]}${successdiscription[sup_level[2]]}\n行动顺序：\n${resultRank}`);
               }
               else {
-                let sup_name = cmdArgs.getArgN(2);
-                let sup_rate = cmdArgs.getArgN(3);
-                rank_method = cmdArgs.getArgN(3);
-                if (sup_rate === "" || rank_method === "simple")
-                  sup_rate = 100;
-                if (rank_method !== "simple")
-                  rank_method = cmdArgs.getArgN(4);
-                let sup_level = Roll(ruleCOC, sup_rate);
-                if (sup_level[3] === 0) {
-                  //失败
-                  qsort(rankCCCharacters, 0, rankCCCharacters.length - 1);
-                  let resultRank;
-                  if (rank_method === "simple")
-                    resultRank = simple_ranks(rankCCCharacters);
-                  else
-                    resultRank = ranks(rankCCCharacters);
-                  seal.replyToSender(ctx, msg, `突袭检定${sup_level[0]}\/${sup_level[1]}${successdiscription[sup_level[2]]}\n行动顺序：\n${resultRank}`);
-                }
-                else {
-                  //成功
-                  qsort(rankCCCharacters, 0, rankCCCharacters.length - 1);
-                  rankCCCharacters = sfind(rankCCCharacters, sup_name);
-                  let resultRank;
-                  if (rank_method === "simple")
-                    resultRank = simple_ranks(rankCCCharacters);
-                  else
-                    resultRank = ranks(rankCCCharacters);
-                  seal.replyToSender(ctx, msg, `突袭检定${sup_level[0]}\/${sup_level[1]}${successdiscription[sup_level[2]]}\n行动顺序：\n${resultRank}`);
-                }
+                //成功
+                qsort(rankCCCharacters, 0, rankCCCharacters.length - 1);
+                rankCCCharacters = sfind(rankCCCharacters, sup_name);
+                let resultRank;
+                if (rank_method === "simple")
+                  resultRank = simple_ranks(rankCCCharacters);
+                else
+                  resultRank = ranks(rankCCCharacters);
+                seal.replyToSender(ctx, msg, `突袭检定${sup_level[0]}\/${sup_level[1]}${successdiscription[sup_level[2]]}\n行动顺序：\n${resultRank}`);
               }
             }
+          }
+        } else {
+          if (val == 'list') {
+            let rankCCCharacters = parseUserData(seal.vars.strGet(ctx, `$gCCAS单位数据录入`)[0]);
+            let resultList = list(rankCCCharacters);
+            seal.replyToSender(ctx, msg, `参战单位列表：\n${resultList}`);
           } else {
-            if (val == 'list') {
-              let rankCCCharacters = parseUserData(seal.vars.strGet(ctx, `$gCCAS单位数据录入`)[0]);
-              let resultList = list(rankCCCharacters);
-              seal.replyToSender(ctx, msg, `参战单位列表：\n${resultList}`);
-            } else {
-              seal.replyToSender(ctx, msg, `指令错误，请使用“help”查看正确指令。`);
-            }
+            seal.replyToSender(ctx, msg, `指令错误，请使用“help”查看正确指令。`);
           }
         }
+
       }
       return seal.ext.newCmdExecuteResult(true);
     }
@@ -1640,3 +1653,24 @@ cmdSkill.solve = (ctx, msg, cmdArgs) => {
 };
 // 将命令注册到扩展中
 ext.cmdMap['skill'] = cmdSkill;
+
+//============================================================================================//
+const cmdChase = seal.ext.newCmdItemInfo();
+cmd.name = ''; // 指令名字，可用中文
+cmd.help = '';
+cmd.solve = (ctx, msg, cmdArgs) => {
+  let val = cmdArgs.getArgN(1);
+  switch (val) {
+    case 'help': {
+      const ret = seal.ext.newCmdExecuteResult(true);
+      ret.showHelp = true;
+      return ret;
+    }
+    default: {
+
+      return seal.ext.newCmdExecuteResult(true);
+    }
+  }
+};
+// 将命令注册到扩展中
+ext.cmdMap[''] = cmd;   
