@@ -634,7 +634,6 @@ cmdClear.solve = (ctx, msg, cmdArgs) => {
     default: {
       const sora = [];
       seal.vars.strSet(ctx, `$gCCAS单位数据录入`, JSON.stringify(sora));
-      seal.vars.strSet(ctx, `$gCCAS战斗规则录入`, JSON.stringify(___rule));
       seal.replyToSender(ctx, msg, `数据已清空`);
       return seal.ext.newCmdExecuteResult(true);
     }
