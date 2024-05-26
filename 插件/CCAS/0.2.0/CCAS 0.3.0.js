@@ -700,7 +700,7 @@ cmdModify.help = `.modify指令用于修改npc属性
 特别注意：体格，DB，最大生命值无法修改，修改生命值时属性名称请填写HP（大写）
 修改其他基础属性时请填写属性的英文简称（例如力量是str）（小写）
 （如果不满可以@开发者催更）`;
-cmd.solve = (ctx, msg, cmdArgs) => {
+cmdModify.solve = (ctx, msg, cmdArgs) => {
   let val = cmdArgs.getArgN(1);
   switch (val) {
     case 'help': {
@@ -981,9 +981,10 @@ cmdAtk.help = `.atk指令可用于计算伤害
 
   模式为\`#\`时，攻击目标可以闪避或反击，此时填写的攻击目标部分应形如\`张三 闪避\`或\`张三 反击 1d4\`,此处使用反击默认对对方斗殴技能进行检定
   模式为\`%\`时，攻击目标无法闪避或反击，此时填写的攻击目标部分应只包含攻击目标的名字
-
   除此之外，当不填写模式时，指令将变为.atk 技能 伤害 攻击目标1 攻击目标2 攻击目标3 etc.
-  此时将把指令发出者作为攻击者，除此之外的部分和模式\`#\`一致`;
+  此时将把指令发出者作为攻击者，除此之外的部分和模式\`#\`一致
+  
+  描述贯穿伤害时，请在伤害串中加入\`\*\`号，例如\`\*1d4+db\``;
 cmdAtk.solve = (ctx, msg, cmdArgs) => {
   let val = cmdArgs.getArgN(1);
   switch (val) {
@@ -1268,8 +1269,6 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
                     let aimerroll = Roll(ruleCOC, combatpldata[aimfinder].闪避)
                     if (atkerroll[2] > aimerroll[2] && atkerroll[2] >= 2) {
                       //闪避失败，计算伤害
-                      //这里还没有考虑极难成功伤害贯穿的情况，目前默认打满，可能会写贯穿（不一定）
-                      // combatpldata[aimfinder].cname === aim[aimerfinder]
                       let totaldamage = Number(damagecal(atkerdamage,combatpldata[atkerfinder].DB,atkerroll[2]))
                       combatpldata[aimfinder].HP -= totaldamage
                       atkreply += `${atkername}对${aim[aimerfinder]}的攻击${atkerroll[0]}/${atkerroll[1]}${successdiscription[atkerroll[2]]}\n`
