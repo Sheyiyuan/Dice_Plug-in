@@ -1653,24 +1653,3 @@ cmdSkill.solve = (ctx, msg, cmdArgs) => {
 };
 // 将命令注册到扩展中
 ext.cmdMap['skill'] = cmdSkill;
-
-//============================================================================================//
-const cmdChase = seal.ext.newCmdItemInfo();
-cmd.name = ''; // 指令名字，可用中文
-cmd.help = '';
-cmd.solve = (ctx, msg, cmdArgs) => {
-  let val = cmdArgs.getArgN(1);
-  switch (val) {
-    case 'help': {
-      const ret = seal.ext.newCmdExecuteResult(true);
-      ret.showHelp = true;
-      return ret;
-    }
-    default: {
-
-      return seal.ext.newCmdExecuteResult(true);
-    }
-  }
-};
-// 将命令注册到扩展中
-ext.cmdMap[''] = cmd;   
