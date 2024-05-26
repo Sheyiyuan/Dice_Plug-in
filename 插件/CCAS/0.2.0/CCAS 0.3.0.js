@@ -9,6 +9,7 @@
 // @homepageURL  https://github.com/Sheyiyuan/Dice_Plug-in.git
 // ==/UserScript==
 /*
+
 主要功能
 1. 通用基本功能 v
   1.1 判定建立战斗与追逐
