@@ -620,6 +620,59 @@ cmdDeleteNPC.solve = (ctx, msg, cmdArgs) => {
 ext.cmdMap['deletenpc'] = cmdDeleteNPC;
 
 //============================================================================================//
+
+//单点属性修改
+//.modify player attribute value
+const cmd = seal.ext.newCmdItemInfo();
+cmd.name = 'modify'; // 指令名字，可用中文
+cmd.help = `.modify指令用于修改npc属性
+输入格式：.modify 单位名称 属性名称 属性值
+特别注意：体格，DB，最大生命值无法修改，修改生命值时属性名称请填写HP（大写）
+修改其他基础属性时请填写属性的英文简称（例如力量是str）（小写）
+（如果不满可以@开发者催更）`;
+cmd.solve = (ctx, msg, cmdArgs) => {
+  let val = cmdArgs.getArgN(1);
+  switch (val) {
+    case 'help': {
+      const ret = seal.ext.newCmdExecuteResult(true);
+      ret.showHelp = true;
+      return ret;
+    }
+    default: {
+      let plname = cmdArgs.getArgN(1)
+      let plskill = cmdArgs.getArgN(2)
+      let plvalue = cmdArgs.getArgN(3)
+      let textOL = seal.vars.strGet(ctx, `$gCCAS单位数据录入`)[0]
+      let pls = parseUserData(textOL)
+      for (let plnum = 0; plnum < pls.length; plnum++) {
+        if (pls[plnum].cname === plname) {
+          pls[plnum][plskill] = plvalue
+        }
+      }
+      let transtext = ""
+      for (let plnum = 0; plnum < pls.length; plnum++) {
+        transtext += pls[plnum].cname + ` `
+        for (var key in pls[plnum]) {
+          transtext += key + ` ` + pls[plnum][key] + ` `
+        }
+        transtext += `\n`
+      }
+      let textNew = transtext;
+      // combat new
+      const sora = [];
+      seal.vars.strSet(ctx, `$gCCAS单位数据录入`, JSON.stringify(sora))
+      // setnpc
+      textNew += "\n" + "\n[]";
+      seal.vars.strSet(ctx, `$gCCAS单位数据录入`, textNew);
+      seal.replyToSender(ctx, msg, `${plname}的属性${plskill}已修改为${plvalue}`)
+      return seal.ext.newCmdExecuteResult(true);
+    }
+  }
+};
+// 将命令注册到扩展中
+ext.cmdMap['modify'] = cmd;
+
+//============================================================================================//
 const cmdClear = seal.ext.newCmdItemInfo();
 cmdClear.name = 'ccasclear'; // 指令名字，可用中文
 cmdClear.help = '';
@@ -1442,7 +1495,14 @@ ext.cmdMap['atk'] = cmdAtk;
 //.skill skill aimer (infect) //(pl用)
 const cmdSkill = seal.ext.newCmdItemInfo();
 cmdSkill.name = 'skill'; // 指令名字，可用中文
-cmdSkill.help = '';
+cmdSkill.help = `.skill指令可用于代骰战技
+  使用方法：.skill 模式 攻击者 技能 攻击目标
+
+  模式为\`#\`时，攻击目标可以闪避或反击，此时填写的攻击目标部分应形如\`张三 闪避\`或\`张三 反击 1d4\`,此处使用反击默认对对方斗殴技能进行检定
+  若省略攻击目标的应对方案，视为攻击目标不进行或无法进行闪避或反击，此时攻击目标部分值包含攻击目标的名称
+
+  除此之外，当不填写模式时，指令将变为.skill 技能 攻击目标
+  此时将把指令发出者作为攻击者，除此之外的部分和模式\`#\`一致`;
 cmdSkill.solve = (ctx, msg, cmdArgs) => {
   let val = cmdArgs.getArgN(1);
   switch (val) {
@@ -1515,6 +1575,11 @@ cmdSkill.solve = (ctx, msg, cmdArgs) => {
                     else
                       seal.replyToSender(ctx, msg, `${atkername}承受${punishroll}个惩罚骰，${atkerroll[0]}/${atkerroll[1]}${successdiscription[atkerroll[2]]}\n${aimername}的反击${aimerroll[0]}/${aimerroll[1]}${successdiscription[aimerroll[2]]}\n反击成功，造成${totaldamage}伤害\n${atkername}生命值归零，战技使用失败`)
                   }
+                } else {
+                  if (atkerroll[2] >= 2)
+                    seal.replyToSender(ctx, msg, `${atkername}承受${punishroll}个惩罚骰，${atkerroll[0]}/${atkerroll[1]}${successdiscription[atkerroll[2]]}\n战技使用成功，请玩家自行修改效果`)
+                  else
+                    seal.replyToSender(ctx, msg, `${atkername}承受${punishroll}个惩罚骰，${atkerroll[0]}/${atkerroll[1]}${successdiscription[atkerroll[2]]}\n战技使用失败`)
                 }
               }
             }
@@ -1625,6 +1690,11 @@ cmdSkill.solve = (ctx, msg, cmdArgs) => {
                     else
                       seal.replyToSender(ctx, msg, `${atkername}承受${punishroll}个惩罚骰，${atkerroll[0]}/${atkerroll[1]}${successdiscription[atkerroll[2]]}\n${aimername}的反击${aimerroll[0]}/${aimerroll[1]}${successdiscription[aimerroll[2]]}\n反击成功，造成${totaldamage}伤害\n${atkername}生命值归零，战技使用失败`)
                   }
+                } else {
+                  if (atkerroll[2] >= 2)
+                    seal.replyToSender(ctx, msg, `${atkername}承受${punishroll}个惩罚骰，${atkerroll[0]}/${atkerroll[1]}${successdiscription[atkerroll[2]]}\n战技使用成功，请玩家自行修改效果`)
+                  else
+                    seal.replyToSender(ctx, msg, `${atkername}承受${punishroll}个惩罚骰，${atkerroll[0]}/${atkerroll[1]}${successdiscription[atkerroll[2]]}\n战技使用失败`)
                 }
               }
             }
@@ -1653,24 +1723,3 @@ cmdSkill.solve = (ctx, msg, cmdArgs) => {
 };
 // 将命令注册到扩展中
 ext.cmdMap['skill'] = cmdSkill;
-
-//============================================================================================//
-const cmdChase = seal.ext.newCmdItemInfo();
-cmd.name = ''; // 指令名字，可用中文
-cmd.help = '';
-cmd.solve = (ctx, msg, cmdArgs) => {
-  let val = cmdArgs.getArgN(1);
-  switch (val) {
-    case 'help': {
-      const ret = seal.ext.newCmdExecuteResult(true);
-      ret.showHelp = true;
-      return ret;
-    }
-    default: {
-
-      return seal.ext.newCmdExecuteResult(true);
-    }
-  }
-};
-// 将命令注册到扩展中
-ext.cmdMap[''] = cmd;   
