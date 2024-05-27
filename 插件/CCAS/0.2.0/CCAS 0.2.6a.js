@@ -1315,7 +1315,7 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
                   }
                   else if (infect[aimerfinder] === "反击") {
                     //骰反击
-                    let aimerroll = Roll(ruleCOC, combatpldata[aimfinder].斗殴,aimbp[aimerfinder])
+                    let aimerroll = Roll(ruleCOC, combatpldata[aimfinder].斗殴, aimbp[aimerfinder])
                     if (atkerroll[2] >= aimerroll[2] && atkerroll[2] >= 2) {
                       //反击失败，效果和闪避一样
                       let totaldamage = Number(damagecal(atkerdamage, combatpldata[atkerfinder].DB, atkerroll[2]))
@@ -1625,7 +1625,7 @@ cmdSkill.solve = (ctx, msg, cmdArgs) => {
 };
 // 将命令注册到扩展中
 ext.cmdMap['skill'] = cmdSkill;
-<<<<<<< HEAD
+
 
 //========================================================================================
 
@@ -1658,6 +1658,6 @@ cmdOutnumbered.solve = (ctx, msg, cmdArgs) => {
   }
 };
 // 将命令注册到扩展中
-ext.cmdMap['outnumbered'] = cmdOutnumbered;   
-=======
->>>>>>> 7f56e2d440834c568a9f167078a6d617adc4aa5d
+ext.cmdMap['outnumbered'] = cmdOutnumbered;
+
+
