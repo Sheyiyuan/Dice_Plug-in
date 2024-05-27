@@ -311,10 +311,7 @@ function parseUserData(input) {
     '绞索': 15,
     '鞭': 5,
     '矛': 20,
-    '投掷': 20,
-    humanity: 1,
-    apr: 1,
-    tpr: 0
+    '投掷': 20
   };
   const defaultObj = {
     cname: '张三',
@@ -340,9 +337,7 @@ function parseUserData(input) {
     '矛': 20,
     '投掷': 20,
     age: 30,
-    humanity: 1,
-    apr: 1,
-    tpr: 0
+    humanity: 1
   };
 
   // 分割输入数据按行处理
@@ -492,7 +487,7 @@ function list(arr) {
 // 修复后的伤害计算函数 感谢AI的大力debug
 function damagecal(damagestring, db, successrank = 2) {
   let throughout = 0;
-  if (damagestring.includes('*')) { // 使用正确的转义字符
+  if (damagestring.includes(`*`)) { // 使用正确的转义字符
     throughout = 1;
   }
   // 移除字符串中的'*'符号以方便计算
@@ -1019,7 +1014,7 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
           let inputinfect = cmdArgs.getArgN(++inputcount)
           aim.push(inputpl)
           infect.push(inputinfect)
-          if (inputinfect === "反击") {
+          if (inputinfect !== "闪避") {
             inputconter = cmdArgs.getArgN(++inputcount)
             conteratk.push(inputconter)
           }
@@ -1141,7 +1136,65 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
                     }
                   }
                   else {
-                    atkreply += `未找到角色${aim[aimerfinder]}的应对方案\n\n`
+                    let aimkey = infect[aimerfinder]
+                    //骰反击
+                    let aimerroll = Roll(ruleCOC, combatpldata[aimfinder][aimkey], aimbp[aimerfinder])
+                    if (atkerroll[2] >= aimerroll[2] && atkerroll[2] >= 2) {
+                      //反击失败，效果和闪避一样
+                      let totaldamage = Number(damagecal(atkerdamage, combatpldata[atkerfinder].DB, atkerroll[2]))
+
+                      combatpldata[aimfinder].HP -= totaldamage
+                      atkreply += `${atkername}对${aim[aimerfinder]}的攻击${atkerroll[0]}/${atkerroll[1]}${successdiscription[atkerroll[2]]}\n`
+                      atkreply += `${aim[aimerfinder]}的反击${aimerroll[0]}/${aimerroll[1]}${successdiscription[aimerroll[2]]},反击失败，受到伤害${totaldamage}\n`
+                      if (combatpldata[aimfinder].HP < 0) {
+                        combatpldata[aimfinder].HP = 0
+                        atkreply += `${aim[aimerfinder]}生命值归零\n`
+                      }
+                      if (totaldamage * 2 >= combatpldata[aimfinder].HPM) {
+                        if (combatpldata[aimfinder].HP === 0)
+                          atkreply += `${aim[aimerfinder]}受到重伤且生命值为0，陷入濒死状态`
+                        else {
+                          //重伤判定是否昏迷
+                          let aimerconroll = Roll(ruleCOC, combatpldata[aimfinder].con)
+                          if (aimerconroll[2] >= 2)
+                            atkreply += `${aim[aimerfinder]}受到重伤，体质检定${aimerconroll[0]}/${aimerconroll[1]}${successdiscription[aimerconroll[2]]},未陷入昏迷`
+                          else
+                            atkreply += `${aim[aimerfinder]}受到重伤，体质检定${aimerconroll[0]}/${aimerconroll[1]}${successdiscription[aimerconroll[2]]},陷入昏迷`
+                        }
+                        atkreply += `\n`
+                      }
+                      atkreply += `\n`
+                      // 此时反击未触发
+                    }
+                    else if (atkerroll[2] <= aimerroll[2] && aimerroll[2] >= 2) {
+                      //伤害计算
+                      let totaldamage = Number(damagecal(conteratk[aimerfinder], combatpldata[aimfinder].DB))
+                      //反击成功造成伤害
+                      combatpldata[atkerfinder].HP -= totaldamage
+                      atkreply += `${atkername}对${aim[aimerfinder]}的攻击${atkerroll[0]}/${atkerroll[1]}${successdiscription[atkerroll[2]]}\n`
+                      atkreply += `${aim[aimerfinder]}的反击${aimerroll[0]}/${aimerroll[1]}${successdiscription[aimerroll[2]]},反击成功，造成伤害${totaldamage}\n`
+                      //判定重伤和昏迷
+                      if (combatpldata[atkerfinder].HP < 0) {
+                        combatpldata[atkerfinder].HP = 0
+                        atkreply += `${atkername}生命值归零\n`
+                      }
+                      if (totaldamage * 2 >= combatpldata[atkerfinder].HPM) {
+                        if (combatpldata[atkerfinder].HP === 0)
+                          atkreply += `${atkername}受到重伤且生命值归零，陷入濒死状态\n`
+                        else {
+                          let atkerconroll = Roll(ruleCOC, combatpldata[atkerfinder].con)
+                          if (atkerconroll[2] >= 2)
+                            atkreply += `${atkername}受到重伤，体质检定${atkerconroll[0]}/${atkerconroll[1]}${successdiscription[atkerconroll[2]]},未陷入昏迷`
+                          else
+                            atkreply += `${atkername}受到重伤，体质检定${atkerconroll[0]}/${atkerconroll[1]}${successdiscription[atkerconroll[2]]},陷入昏迷`
+                        }
+                      }
+                      atkreply += `\n`
+                    }
+                    else {
+                      atkreply += `${atkername}对${aim[aimerfinder]}的攻击${atkerroll[0]}/${atkerroll[1]}${successdiscription[atkerroll[2]]}\n`
+                      atkreply += `${aim[aimerfinder]}的反击${aimerroll[0]}/${aimerroll[1]}${successdiscription[aimerroll[2]]},反击失败\n\n`
+                    }
                   }
                 }
 
@@ -1244,7 +1297,6 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
         // setnpc
         atktrans += "\n" + "\n[]";
         seal.vars.strSet(ctx, `$gCCAS单位数据录入`, atktrans);
-
       } else {
         //pl使用的包含反击/闪避的伤害计算
         let atkername = ctx.player.name;
@@ -1266,7 +1318,7 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
           let inputinfect = cmdArgs.getArgN(++inputcount)
           aim.push(inputpl)
           infect.push(inputinfect)
-          if (inputinfect === "反击") {
+          if (inputinfect !== "闪避") {
             let inputconter = cmdArgs.getArgN(++inputcount)
             conteratk.push(inputconter)
           }
@@ -1320,7 +1372,7 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
                   }
                   else if (infect[aimerfinder] === "反击") {
                     //骰反击
-                    let aimerroll = Roll(ruleCOC, combatpldata[aimfinder].斗殴, aimbp[aimerfinder])
+                    let aimerroll = Roll(ruleCOC, combatpldata[aimfinder].斗殴,aimbp[aimerfinder])
                     if (atkerroll[2] >= aimerroll[2] && atkerroll[2] >= 2) {
                       //反击失败，效果和闪避一样
                       let totaldamage = Number(damagecal(atkerdamage, combatpldata[atkerfinder].DB, atkerroll[2]))
@@ -1377,7 +1429,65 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
                     }
                   }
                   else {
-                    atkreply += `未找到角色${aim[aimerfinder]}的应对方案\n\n`
+                    let aimkey = infect[aimerfinder]
+                    //骰反击
+                    let aimerroll = Roll(ruleCOC, combatpldata[aimfinder][aimkey], aimbp[aimerfinder])
+                    if (atkerroll[2] >= aimerroll[2] && atkerroll[2] >= 2) {
+                      //反击失败，效果和闪避一样
+                      let totaldamage = Number(damagecal(atkerdamage, combatpldata[atkerfinder].DB, atkerroll[2]))
+
+                      combatpldata[aimfinder].HP -= totaldamage
+                      atkreply += `${atkername}对${aim[aimerfinder]}的攻击${atkerroll[0]}/${atkerroll[1]}${successdiscription[atkerroll[2]]}\n`
+                      atkreply += `${aim[aimerfinder]}的反击${aimerroll[0]}/${aimerroll[1]}${successdiscription[aimerroll[2]]},反击失败，受到伤害${totaldamage}\n`
+                      if (combatpldata[aimfinder].HP < 0) {
+                        combatpldata[aimfinder].HP = 0
+                        atkreply += `${aim[aimerfinder]}生命值归零\n`
+                      }
+                      if (totaldamage * 2 >= combatpldata[aimfinder].HPM) {
+                        if (combatpldata[aimfinder].HP === 0)
+                          atkreply += `${aim[aimerfinder]}受到重伤且生命值为0，陷入濒死状态`
+                        else {
+                          //重伤判定是否昏迷
+                          let aimerconroll = Roll(ruleCOC, combatpldata[aimfinder].con)
+                          if (aimerconroll[2] >= 2)
+                            atkreply += `${aim[aimerfinder]}受到重伤，体质检定${aimerconroll[0]}/${aimerconroll[1]}${successdiscription[aimerconroll[2]]},未陷入昏迷`
+                          else
+                            atkreply += `${aim[aimerfinder]}受到重伤，体质检定${aimerconroll[0]}/${aimerconroll[1]}${successdiscription[aimerconroll[2]]},陷入昏迷`
+                        }
+                        atkreply += `\n`
+                      }
+                      atkreply += `\n`
+                      // 此时反击未触发
+                    }
+                    else if (atkerroll[2] <= aimerroll[2] && aimerroll[2] >= 2) {
+                      //伤害计算
+                      let totaldamage = Number(damagecal(conteratk[aimerfinder], combatpldata[aimfinder].DB))
+                      //反击成功造成伤害
+                      combatpldata[atkerfinder].HP -= totaldamage
+                      atkreply += `${atkername}对${aim[aimerfinder]}的攻击${atkerroll[0]}/${atkerroll[1]}${successdiscription[atkerroll[2]]}\n`
+                      atkreply += `${aim[aimerfinder]}的反击${aimerroll[0]}/${aimerroll[1]}${successdiscription[aimerroll[2]]},反击成功，造成伤害${totaldamage}\n`
+                      //判定重伤和昏迷
+                      if (combatpldata[atkerfinder].HP < 0) {
+                        combatpldata[atkerfinder].HP = 0
+                        atkreply += `${atkername}生命值归零\n`
+                      }
+                      if (totaldamage * 2 >= combatpldata[atkerfinder].HPM) {
+                        if (combatpldata[atkerfinder].HP === 0)
+                          atkreply += `${atkername}受到重伤且生命值归零，陷入濒死状态\n`
+                        else {
+                          let atkerconroll = Roll(ruleCOC, combatpldata[atkerfinder].con)
+                          if (atkerconroll[2] >= 2)
+                            atkreply += `${atkername}受到重伤，体质检定${atkerconroll[0]}/${atkerconroll[1]}${successdiscription[atkerconroll[2]]},未陷入昏迷`
+                          else
+                            atkreply += `${atkername}受到重伤，体质检定${atkerconroll[0]}/${atkerconroll[1]}${successdiscription[atkerconroll[2]]},陷入昏迷`
+                        }
+                      }
+                      atkreply += `\n`
+                    }
+                    else {
+                      atkreply += `${atkername}对${aim[aimerfinder]}的攻击${atkerroll[0]}/${atkerroll[1]}${successdiscription[atkerroll[2]]}\n`
+                      atkreply += `${aim[aimerfinder]}的反击${aimerroll[0]}/${aimerroll[1]}${successdiscription[aimerroll[2]]},反击失败\n\n`
+                    }
                   }
                 }
 
@@ -1630,39 +1740,3 @@ cmdSkill.solve = (ctx, msg, cmdArgs) => {
 };
 // 将命令注册到扩展中
 ext.cmdMap['skill'] = cmdSkill;
-
-
-//========================================================================================
-
-const cmdOutnumbered = seal.ext.newCmdItemInfo();
-cmdOutnumbered.name = 'outnumbered'; // 指令名字，可用中文
-cmdOutnumbered.help = '用于启用/禁用寡不敌众，0为禁用，1为启用，默认值为1。';
-cmdOutnumbered.solve = (ctx, msg, cmdArgs) => {
-  let val = cmdArgs.getArgN(1);
-  switch (val) {
-    case 'help': {
-      const ret = seal.ext.newCmdExecuteResult(true);
-      ret.showHelp = true;
-      return ret;
-    }
-    default: {
-      if (val === 1 || val === 0) {
-        seal.vars.intSet(ctx, `$outnmubered`, val);
-        let outnumberedText = '寡不敌众规则已'
-        if (val) {
-          outnumberedText += '启用。'
-        } else {
-          outnumberedText += '禁用。'
-        }
-        seal.replyToSender(ctx, msg, `${outnumberedText}`);
-      } else {
-        seal.replyToSender(ctx, msg, `指令错误，请使用“help”查看正确指令。`)
-      }
-      return seal.ext.newCmdExecuteResult(true);
-    }
-  }
-};
-// 将命令注册到扩展中
-ext.cmdMap['outnumbered'] = cmdOutnumbered;
-
-
