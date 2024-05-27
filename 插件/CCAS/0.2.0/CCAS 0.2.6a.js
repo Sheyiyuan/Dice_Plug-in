@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Combat&Chases Assist System
 // @author       社亦园 冰红茶
-// @version      0.2.6
+// @version      0.2.6a
 // @description  一款COC战斗与追逐辅助系统
 // @timestamp    1716707103
 // 2024-05-26 15:05:03
@@ -490,7 +490,7 @@ function list(arr) {
 let ext = seal.ext.find('Combat&Chases Assist System');
 if (!ext) {
   // 不存在，那么建立扩展，名为，作者“”，版本1.0.0
-  ext = seal.ext.new('Combat&Chases Assist System', '社亦园 冰红茶', '0.2.6');
+  ext = seal.ext.new('Combat&Chases Assist System', '社亦园 冰红茶', '0.2.6a');
   // 注册扩展
   seal.ext.register(ext);
 }
