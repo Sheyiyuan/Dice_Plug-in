@@ -484,76 +484,6 @@ function list(arr) {
   return cnameList;
 }
 
-// 修复后的伤害计算函数 感谢AI的大力debug
-function damagecal(damagestring, db, successrank = 2) {
-  let throughout = 0;
-  if (damagestring.includes('*')) { // 使用正确的转义字符
-    throughout = 1;
-  }
-  // 移除字符串中的'*'符号以方便计算
-  let damagetext = damagestring.replace(/\*/g, ''); // 使用正则表达式替换
-
-  let damageparts = damagetext.split('+'); // 更改变量名为damageparts以避免与循环变量混淆
-  let totalDamage = 0;
-
-  for (let i = 0; i < damageparts.length; i++) {
-    let partDamage = 0;
-    let damagePart = damageparts[i].split('-');
-
-    if (damagePart[0] === 'db') {
-      if (successrank < 4) {
-        partDamage += Number(D(db[0], db[1]));
-      } else {
-        if (throughout === 0) {
-          partDamage += Number(db[0] * db[1]);
-        } else {
-          partDamage += Number(db[0] * db[1]) + Number(D(db[0], db[1]));
-        }
-      }
-    } else if (damagePart[0] === '半db') {
-      if (successrank < 4) {
-        partDamage += Math.floor(Number(D(db[0], db[1])) / 2);
-      } else {
-        if (throughout === 0) {
-          partDamage += Math.floor(Number(db[0] * db[1]) / 2);
-        } else {
-          partDamage += Math.floor((Number(db[0] * db[1]) + Number(D(db[0], db[1]))) / 2);
-        }
-      }
-    } else if (!isNaN(damagePart[0]) && damagePart[0] >= 0 && damagePart[0] <= 100) { // 添加缺失的条件判断开始括号，并处理数字直接伤害
-      partDamage += Number(damagePart[0]);
-    } else if (damagePart[0].includes('d')) {
-      let diceParts = damagePart[0].split('d');
-      diceParts[0] = Number(diceParts[0]);
-      diceParts[1] = Number(diceParts[1]);
-
-      if (successrank < 4) {
-        partDamage += Number(D(diceParts[0], diceParts[1]));
-      } else {
-        if (throughout === 0) {
-          partDamage += Number(diceParts[0] * diceParts[1]);
-        } else {
-          partDamage += Number(diceParts[0] * diceParts[1]) + Number(D(diceParts[0], diceParts[1]));
-        }
-      }
-    }
-
-    // 应用减伤部分
-    for (let j = 1; j < damagePart.length; j++) {
-      partDamage -= Number(damagePart[j]);
-    }
-
-    totalDamage += partDamage;
-  }
-
-  // 确保总伤害不为负数
-  if (totalDamage < 0) {
-    totalDamage = 0;
-  }
-
-  return totalDamage;
-}
-
 //============================================================================================//
 
 // 首先检查是否已经存在
@@ -700,7 +630,7 @@ cmdModify.help = `.modify指令用于修改npc属性
 特别注意：体格，DB，最大生命值无法修改，修改生命值时属性名称请填写HP（大写）
 修改其他基础属性时请填写属性的英文简称（例如力量是str）（小写）
 （如果不满可以@开发者催更）`;
-cmdModify.solve = (ctx, msg, cmdArgs) => {
+cmd.solve = (ctx, msg, cmdArgs) => {
   let val = cmdArgs.getArgN(1);
   switch (val) {
     case 'help': {
@@ -981,10 +911,9 @@ cmdAtk.help = `.atk指令可用于计算伤害
 
   模式为\`#\`时，攻击目标可以闪避或反击，此时填写的攻击目标部分应形如\`张三 闪避\`或\`张三 反击 1d4\`,此处使用反击默认对对方斗殴技能进行检定
   模式为\`%\`时，攻击目标无法闪避或反击，此时填写的攻击目标部分应只包含攻击目标的名字
+
   除此之外，当不填写模式时，指令将变为.atk 技能 伤害 攻击目标1 攻击目标2 攻击目标3 etc.
-  此时将把指令发出者作为攻击者，除此之外的部分和模式\`#\`一致
-  
-  描述贯穿伤害时，请在伤害串中加入\`\*\`号，例如\`\*1d4+db\``;
+  此时将把指令发出者作为攻击者，除此之外的部分和模式\`#\`一致`;
 cmdAtk.solve = (ctx, msg, cmdArgs) => {
   let val = cmdArgs.getArgN(1);
   switch (val) {
@@ -1000,6 +929,7 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
         let atkername = cmdArgs.getArgN(2)
         let atkerskill = cmdArgs.getArgN(3)
         let atkerdamage = cmdArgs.getArgN(4)
+        let atkerdamagepart = atkerdamage.split("+")
         const aim = []
         const infect = []
         const conteratk = []
@@ -1037,9 +967,36 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
                     //骰闪避
                     let aimerroll = Roll(ruleCOC, combatpldata[aimfinder].闪避)
                     if (atkerroll[2] > aimerroll[2] && atkerroll[2] >= 2) {
-                      //闪避失败，计算伤害(贯穿写了)
-                      let totaldamage = Number(damagecal(atkerdamage, combatpldata[atkerfinder].DB, atkerroll[2]))
-
+                      //闪避失败，计算伤害
+                      //这里还没有考虑极难成功伤害贯穿的情况，目前默认打满，可能会写贯穿（不一定）
+                      // combatpldata[aimfinder].cname === aim[aimerfinder]
+                      let totaldamage = Number(0)
+                      for (let damagepartnum = 0; damagepartnum < atkerdamagepart.length; damagepartnum++) {
+                        if (atkerdamagepart[damagepartnum] === "db") {
+                          //极难成功打满，否则骰点
+                          if (atkerroll[2] >= 4)
+                            totaldamage += Number(combatpldata[atkerfinder].DB[0] * combatpldata[atkerfinder].DB[1])
+                          else
+                            totaldamage += Number(D(combatpldata[atkerfinder].DB[0], combatpldata[atkerfinder].DB[1]))
+                        }
+                        else if (atkerdamagepart[damagepartnum] === "半db") {
+                          //极难成功打满，否则骰点
+                          if (atkerroll[2] >= 4)
+                            totaldamage += Math.floor(Number(combatpldata[atkerfinder].DB[0] * combatpldata[atkerfinder].DB[1]) / 2)
+                          else
+                            totaldamage += Math.floor(Number(D(combatpldata[atkerfinder].DB[0], combatpldata[atkerfinder].DB[1])) / 2)
+                        }
+                        else if (atkerdamagepart[damagepartnum] >= 1 && atkerdamagepart[damagepartnum] <= 100) {
+                          totaldamage += Number(atkerdamagepart[damagepartnum])
+                        }
+                        else if (atkerdamagepart[damagepartnum].includes("d")) {
+                          //极难成功打满，否则骰点
+                          if (atkerroll[2] >= 4)
+                            totaldamage += Number(dividemut(atkerdamagepart[damagepartnum]))
+                          else
+                            totaldamage += Number(dividedice(atkerdamagepart[damagepartnum]))
+                        }
+                      }
                       combatpldata[aimfinder].HP -= totaldamage
                       atkreply += `${atkername}对${aim[aimerfinder]}的攻击${atkerroll[0]}/${atkerroll[1]}${successdiscription[atkerroll[2]]}\n`
                       atkreply += `${aim[aimerfinder]}的闪避${aimerroll[0]}/${aimerroll[1]}${successdiscription[aimerroll[2]]},闪避失败，受到伤害${totaldamage}\n`
@@ -1071,8 +1028,33 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
                     let aimerroll = Roll(ruleCOC, combatpldata[aimfinder].斗殴)
                     if (atkerroll[2] >= aimerroll[2] && atkerroll[2] >= 2) {
                       //反击失败，效果和闪避一样
-                      let totaldamage = Number(damagecal(atkerdamage, combatpldata[atkerfinder].DB, atkerroll[2]))
-                      
+                      let totaldamage = 0
+                      for (let damagepartnum = 0; damagepartnum < atkerdamagepart.length; damagepartnum++) {
+                        if (atkerdamagepart[damagepartnum] === "db") {
+                          //极难成功打满，否则骰点
+                          if (atkerroll[2] >= 4)
+                            totaldamage += Number(combatpldata[atkerfinder].DB[0] * combatpldata[atkerfinder].DB[1])
+                          else
+                            totaldamage += Number(D(combatpldata[atkerfinder].DB[0], combatpldata[atkerfinder].DB[1]))
+                        }
+                        else if (atkerdamagepart[damagepartnum] === "半db") {
+                          //极难成功打满，否则骰点
+                          if (atkerroll[2] >= 4)
+                            totaldamage += Math.floor(Number(combatpldata[atkerfinder].DB[0] * combatpldata[atkerfinder].DB[1]) / 2)
+                          else
+                            totaldamage += Math.floor(Number(D(combatpldata[atkerfinder].DB[0], combatpldata[atkerfinder].DB[1])) / 2)
+                        }
+                        else if (atkerdamagepart[damagepartnum] >= 1 && atkerdamagepart[damagepartnum] <= 100) {
+                          totaldamage += Number(atkerdamagepart[damagepartnum])
+                        }
+                        else if (atkerdamagepart[damagepartnum].includes("d")) {
+                          //极难成功打满，否则骰点
+                          if (atkerroll[2] >= 4)
+                            totaldamage += Number(dividemut(atkerdamagepart[damagepartnum]))
+                          else
+                            totaldamage += Number(dividedice(atkerdamagepart[damagepartnum]))
+                        }
+                      }
                       combatpldata[aimfinder].HP -= totaldamage
                       atkreply += `${atkername}对${aim[aimerfinder]}的攻击${atkerroll[0]}/${atkerroll[1]}${successdiscription[atkerroll[2]]}\n`
                       atkreply += `${aim[aimerfinder]}的反击${aimerroll[0]}/${aimerroll[1]}${successdiscription[aimerroll[2]]},反击失败，受到伤害${totaldamage}\n`
@@ -1097,8 +1079,23 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
                       // 此时反击未触发
                     }
                     else if (atkerroll[2] <= aimerroll[2] && aimerroll[2] >= 2) {
-                      //伤害计算
-                      let totaldamage = Number(damagecal(conteratk[aimerfinder],combatpldata[aimfinder].DB))
+                      let totaldamage = 0
+                      //反击伤害计算
+                      let conterdamagepart = conteratk[aimerfinder].split("+")
+                      for (let conterdamagenum = 0; conterdamagenum < conterdamagepart.length; conterdamagenum++) {
+                        if (conterdamagepart[conterdamagenum] === "db") {
+                          totaldamage += Number(D(combatpldata[aimfinder].DB[0], combatpldata[aimfinder].DB[1]))
+                        }
+                        else if (conterdamagepart[conterdamagenum] === '半db') {
+                          totaldamage += Math.floor(Number(D(combatpldata[aimfinder].DB[0], combatpldata[aimfinder].DB[1])) / 2)
+                        }
+                        else if (conterdamagepart[conterdamagenum] >= 1 && conterdamagepart[conterdamagenum] <= 100) {
+                          totaldamage += Number(conterdamagepart[conterdamagenum])
+                        }
+                        else if (conterdamagepart[conterdamagenum].includes("d")) {
+                          totaldamage += Number(dividedice(conterdamagepart[conterdamagenum]))
+                        }
+                      }
                       //反击成功造成伤害
                       combatpldata[atkerfinder].HP -= totaldamage
                       atkreply += `${atkername}对${aim[aimerfinder]}的攻击${atkerroll[0]}/${atkerroll[1]}${successdiscription[atkerroll[2]]}\n`
@@ -1157,6 +1154,7 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
         let atkername = cmdArgs.getArgN(2)
         let atkerskill = cmdArgs.getArgN(3)
         let atkerdamage = cmdArgs.getArgN(4)
+        let atkerdamagepart = atkerdamage.split("+")
         const aim = []
         let inputcount = 4
         let inputpl = cmdArgs.getArgN(++inputcount)
@@ -1179,7 +1177,33 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
                 if (combatpldata[aimfinder].cname === aim[aimerfinder]) {
                   if (atkerroll[2] >= 2) {
                     //这里直接把闪避失败的贴过来了
-                    let totaldamage = Number(damagecal(atkerdamage,combatpldata[atkerfinder].DB,atkerroll[2]))
+                    let totaldamage = Number(0)
+                    for (let damagepartnum = 0; damagepartnum < atkerdamagepart.length; damagepartnum++) {
+                      if (atkerdamagepart[damagepartnum] === "db") {
+                        //极难成功打满，否则骰点
+                        if (atkerroll[2] >= 4)
+                          totaldamage += Number(combatpldata[atkerfinder].DB[0] * combatpldata[atkerfinder].DB[1])
+                        else
+                          totaldamage += Number(D(combatpldata[atkerfinder].DB[0], combatpldata[atkerfinder].DB[1]))
+                      }
+                      else if (atkerdamagepart[damagepartnum] === "半db") {
+                        //极难成功打满，否则骰点
+                        if (atkerroll[2] >= 4)
+                          totaldamage += Math.floor(Number(combatpldata[atkerfinder].DB[0] * combatpldata[atkerfinder].DB[1]) / 2)
+                        else
+                          totaldamage += Math.floor(Number(D(combatpldata[atkerfinder].DB[0], combatpldata[atkerfinder].DB[1])) / 2)
+                      }
+                      else if (atkerdamagepart[damagepartnum] >= 1 && atkerdamagepart[damagepartnum] <= 100) {
+                        totaldamage += Number(atkerdamagepart[damagepartnum])
+                      }
+                      else if (atkerdamagepart[damagepartnum].includes("d")) {
+                        //极难成功打满，否则骰点
+                        if (atkerroll[2] >= 4)
+                          totaldamage += Number(dividemut(atkerdamagepart[damagepartnum]))
+                        else
+                          totaldamage += Number(dividedice(atkerdamagepart[damagepartnum]))
+                      }
+                    }
                     //计算伤害后更新数据
                     combatpldata[aimfinder].HP -= totaldamage
                     atkreply += `${atkername}对${aim[aimerfinder]}的攻击${atkerroll[0]}/${atkerroll[1]}${successdiscription[atkerroll[2]]}\n`
@@ -1233,6 +1257,7 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
         let atkername = ctx.player.name;
         let atkerskill = cmdArgs.getArgN(1)
         let atkerdamage = cmdArgs.getArgN(2)
+        let atkerdamagepart = atkerdamage.split("+")
         let combatpldata = parseUserData(seal.vars.strGet(ctx, `$gCCAS单位数据录入`)[0])
         let ruleCOC = ctx.group.cocRuleIndex
         let inputcount = 2
@@ -1260,7 +1285,9 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
             let atkreply = ""
             //骰点在这里
             let atkerroll = Roll(ruleCOC, atkerskilldata)
+            //for (let aimfinder = 0; aimfinder < combatpldata.length; aimfinder++) {
             for (let aimerfinder = 0; aimerfinder < aim.length; aimerfinder++) {
+              //for (let aimerfinder = 0; aimerfinder < aim.length; aimerfinder++) {
               for (let aimfinder = 0; aimfinder < combatpldata.length; aimfinder++) {
 
                 if (combatpldata[aimfinder].cname === aim[aimerfinder]) {
@@ -1269,7 +1296,35 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
                     let aimerroll = Roll(ruleCOC, combatpldata[aimfinder].闪避)
                     if (atkerroll[2] > aimerroll[2] && atkerroll[2] >= 2) {
                       //闪避失败，计算伤害
-                      let totaldamage = Number(damagecal(atkerdamage,combatpldata[atkerfinder].DB,atkerroll[2]))
+                      //这里还没有考虑极难成功伤害贯穿的情况，目前默认打满，可能会写贯穿（不一定）
+                      // combatpldata[aimfinder].cname === aim[aimerfinder]
+                      let totaldamage = Number(0)
+                      for (let damagepartnum = 0; damagepartnum < atkerdamagepart.length; damagepartnum++) {
+                        if (atkerdamagepart[damagepartnum] === "db") {
+                          //极难成功打满，否则骰点
+                          if (atkerroll[2] >= 4)
+                            totaldamage += Number(combatpldata[atkerfinder].DB[0] * combatpldata[atkerfinder].DB[1])
+                          else
+                            totaldamage += Number(D(combatpldata[atkerfinder].DB[0], combatpldata[atkerfinder].DB[1]))
+                        }
+                        else if (atkerdamagepart[damagepartnum] === "半db") {
+                          //极难成功打满，否则骰点
+                          if (atkerroll[2] >= 4)
+                            totaldamage += Math.floor(Number(combatpldata[atkerfinder].DB[0] * combatpldata[atkerfinder].DB[1]) / 2)
+                          else
+                            totaldamage += Math.floor(Number(D(combatpldata[atkerfinder].DB[0], combatpldata[atkerfinder].DB[1])) / 2)
+                        }
+                        else if (atkerdamagepart[damagepartnum] >= 1 && atkerdamagepart[damagepartnum] <= 100) {
+                          totaldamage += Number(atkerdamagepart[damagepartnum])
+                        }
+                        else if (atkerdamagepart[damagepartnum].includes("d")) {
+                          //极难成功打满，否则骰点
+                          if (atkerroll[2] >= 4)
+                            totaldamage += Number(dividemut(atkerdamagepart[damagepartnum]))
+                          else
+                            totaldamage += Number(dividedice(atkerdamagepart[damagepartnum]))
+                        }
+                      }
                       combatpldata[aimfinder].HP -= totaldamage
                       atkreply += `${atkername}对${aim[aimerfinder]}的攻击${atkerroll[0]}/${atkerroll[1]}${successdiscription[atkerroll[2]]}\n`
                       atkreply += `${aim[aimerfinder]}的闪避${aimerroll[0]}/${aimerroll[1]}${successdiscription[aimerroll[2]]},闪避失败，受到伤害${totaldamage}\n`
@@ -1301,7 +1356,33 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
                     let aimerroll = Roll(ruleCOC, combatpldata[aimfinder].斗殴)
                     if (atkerroll[2] >= aimerroll[2] && atkerroll[2] >= 2) {
                       //反击失败，效果和闪避一样
-                      let totaldamage = Number(damagecal(atkerdamage,combatpldata[atkerfinder].DB,atkerroll[2]))
+                      let totaldamage = 0
+                      for (let damagepartnum = 0; damagepartnum < atkerdamagepart.length; damagepartnum++) {
+                        if (atkerdamagepart[damagepartnum] === "db") {
+                          //极难成功打满，否则骰点
+                          if (atkerroll[2] >= 4)
+                            totaldamage += Number(combatpldata[atkerfinder].DB[0] * combatpldata[atkerfinder].DB[1])
+                          else
+                            totaldamage += Number(D(combatpldata[atkerfinder].DB[0], combatpldata[atkerfinder].DB[1]))
+                        }
+                        else if (atkerdamagepart[damagepartnum] === "半db") {
+                          //极难成功打满，否则骰点
+                          if (atkerroll[2] >= 4)
+                            totaldamage += Math.floor(Number(combatpldata[atkerfinder].DB[0] * combatpldata[atkerfinder].DB[1]) / 2)
+                          else
+                            totaldamage += Math.floor(Number(D(combatpldata[atkerfinder].DB[0], combatpldata[atkerfinder].DB[1])) / 2)
+                        }
+                        else if (atkerdamagepart[damagepartnum] >= 1 && atkerdamagepart[damagepartnum] <= 100) {
+                          totaldamage += Number(atkerdamagepart[damagepartnum])
+                        }
+                        else if (atkerdamagepart[damagepartnum].includes("d")) {
+                          //极难成功打满，否则骰点
+                          if (atkerroll[2] >= 4)
+                            totaldamage += Number(dividemut(atkerdamagepart[damagepartnum]))
+                          else
+                            totaldamage += Number(dividedice(atkerdamagepart[damagepartnum]))
+                        }
+                      }
                       combatpldata[aimfinder].HP -= totaldamage
                       atkreply += `${atkername}对${aim[aimerfinder]}的攻击${atkerroll[0]}/${atkerroll[1]}${successdiscription[atkerroll[2]]}\n`
                       atkreply += `${aim[aimerfinder]}的反击${aimerroll[0]}/${aimerroll[1]}${successdiscription[aimerroll[2]]},反击失败，受到伤害${totaldamage}\n`
@@ -1326,7 +1407,23 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
                       // 此时反击未触发
                     }
                     else if (atkerroll[2] <= aimerroll[2] && aimerroll[2] >= 2) {
-                      let totaldamage = Number(damagecal(conteratk[aimerfinder],combatpldata[aimfinder].DB))
+                      let totaldamage = 0
+                      //反击伤害计算
+                      let conterdamagepart = conteratk[aimerfinder].split("+")
+                      for (let conterdamagenum = 0; conterdamagenum < conterdamagepart.length; conterdamagenum++) {
+                        if (conterdamagepart[conterdamagenum] === "db") {
+                          totaldamage += Number(D(combatpldata[aimfinder].DB[0], combatpldata[aimfinder].DB[1]))
+                        }
+                        else if (conterdamagepart[conterdamagenum] === '半db') {
+                          totaldamage += Math.floor(Number(D(combatpldata[aimfinder].DB[0], combatpldata[aimfinder].DB[1])) / 2)
+                        }
+                        else if (conterdamagepart[conterdamagenum] >= 1 && conterdamagepart[conterdamagenum] <= 100) {
+                          totaldamage += Number(conterdamagepart[conterdamagenum])
+                        }
+                        else if (conterdamagepart[conterdamagenum].includes("d")) {
+                          totaldamage += Number(dividedice(conterdamagepart[conterdamagenum]))
+                        }
+                      }
                       //反击成功造成伤害
                       combatpldata[atkerfinder].HP -= totaldamage
                       atkreply += `${atkername}对${aim[aimerfinder]}的攻击${atkerroll[0]}/${atkerroll[1]}${successdiscription[atkerroll[2]]}\n`
@@ -1455,7 +1552,23 @@ cmdSkill.solve = (ctx, msg, cmdArgs) => {
                     seal.replyToSender(ctx, msg, `${atkername}承受${punishroll}个惩罚骰，${atkerroll[0]}/${atkerroll[1]}${successdiscription[atkerroll[2]]}\n${aimername}的反击（斗殴）${aimerroll[0]}/${aimerroll[1]}${successdiscription[aimerroll[2]]}\n战技使用和反击均失败\n`)
                   }
                   else {
-                    let totaldamage = Number(damagecal(aimerdamage,combatpldata[aimerfinder].DB))
+                    let aimerdamagepart = aimerdamage.split("+")
+                    let totaldamage = 0
+                    //反击伤害计算
+                    for (let damagenum = 0; damagenum < aimerdamagepart.length; damagenum++) {
+                      if (aimerdamagepart[damagenum] === "db") {
+                        totaldamage += Number(D(combatpldata[aimerfinder].DB[0], combatpldata[aimerfinder].DB[1]))
+                      }
+                      else if (aimerdamagepart[damagenum] === "半db") {
+                        totaldamage += Math.floor(Number(D(combatpldata[aimerfinder].DB[0], combatpldata[aimerfinder].DB[1])) / 2)
+                      }
+                      else if (aimerdamagepart[damagenum] >= 1 && aimerdamagepart[damagenum] <= 100) {
+                        totaldamage += Number(aimerdamagepart[damagenum])
+                      }
+                      else if (aimerdamagepart[damagenum].includes("d")) {
+                        totaldamage += Number(dividedice(aimerdamagepart[damagenum]))
+                      }
+                    }
                     combatpldata[atkerfinder].HP -= totaldamage
                     if (combatpldata[atkerfinder].HP > 0)
                       seal.replyToSender(ctx, msg, `${atkername}承受${punishroll}个惩罚骰，${atkerroll[0]}/${atkerroll[1]}${successdiscription[atkerroll[2]]}\n${aimername}的反击${aimerroll[0]}/${aimerroll[1]}${successdiscription[aimerroll[2]]}\n反击成功，造成${totaldamage}伤害，战技使用失败`)
@@ -1554,7 +1667,23 @@ cmdSkill.solve = (ctx, msg, cmdArgs) => {
                     seal.replyToSender(ctx, msg, `${atkername}承受${punishroll}个惩罚骰，${atkerroll[0]}/${atkerroll[1]}${successdiscription[atkerroll[2]]}\n${aimername}的反击（斗殴）${aimerroll[0]}/${aimerroll[1]}${successdiscription[aimerroll[2]]}\n战技使用和反击均失败\n`)
                   }
                   else {
-                    let totaldamage = Number(damagecal(aimerdamage,combatpldata[aimerfinder].DB))
+                    let aimerdamagepart = aimerdamage.split("+")
+                    let totaldamage = 0
+                    //反击伤害计算
+                    for (let damagenum = 0; damagenum < aimerdamagepart.length; damagenum++) {
+                      if (aimerdamagepart[damagenum] === "db") {
+                        totaldamage += Number(D(combatpldata[aimerfinder].DB[0], combatpldata[aimerfinder].DB[1]))
+                      }
+                      else if (aimerdamagepart[damagenum] === "半db") {
+                        totaldamage += Math.floor(Number(D(combatpldata[aimerfinder].DB[0], combatpldata[aimerfinder].DB[1])) / 2)
+                      }
+                      else if (aimerdamagepart[damagenum] >= 1 && aimerdamagepart[damagenum] <= 100) {
+                        totaldamage += Number(aimerdamagepart[damagenum])
+                      }
+                      else if (aimerdamagepart[damagenum].includes("d")) {
+                        totaldamage += Number(dividedice(aimerdamagepart[damagenum]))
+                      }
+                    }
                     combatpldata[atkerfinder].HP -= totaldamage
                     if (combatpldata[atkerfinder].HP > 0)
                       seal.replyToSender(ctx, msg, `${atkername}承受${punishroll}个惩罚骰，${atkerroll[0]}/${atkerroll[1]}${successdiscription[atkerroll[2]]}\n${aimername}的反击${aimerroll[0]}/${aimerroll[1]}${successdiscription[aimerroll[2]]}\n反击成功，造成${totaldamage}伤害，战技使用失败`)
@@ -1594,3 +1723,5 @@ cmdSkill.solve = (ctx, msg, cmdArgs) => {
 };
 // 将命令注册到扩展中
 ext.cmdMap['skill'] = cmdSkill;
+
+//========================================================================================
