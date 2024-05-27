@@ -311,7 +311,10 @@ function parseUserData(input) {
     '绞索': 15,
     '鞭': 5,
     '矛': 20,
-    '投掷': 20
+    '投掷': 20,
+    humanity: 1,
+    apr: 1,
+    tpr: 0
   };
   const defaultObj = {
     cname: '张三',
@@ -337,7 +340,9 @@ function parseUserData(input) {
     '矛': 20,
     '投掷': 20,
     age: 30,
-    humanity: 1
+    humanity: 1,
+    apr: 1,
+    tpr: 0
   };
 
   // 分割输入数据按行处理
