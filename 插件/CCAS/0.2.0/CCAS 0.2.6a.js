@@ -1725,3 +1725,34 @@ cmdSkill.solve = (ctx, msg, cmdArgs) => {
 ext.cmdMap['skill'] = cmdSkill;
 
 //========================================================================================
+
+const cmdOutnumbered = seal.ext.newCmdItemInfo();
+cmdOutnumbered.name = 'outnumbered'; // 指令名字，可用中文
+cmdOutnumbered.help = '用于启用/禁用寡不敌众，0为禁用，1为启用，默认值为1。';
+cmdOutnumbered.solve = (ctx, msg, cmdArgs) => {
+  let val = cmdArgs.getArgN(1);
+  switch (val) {
+    case 'help': {
+      const ret = seal.ext.newCmdExecuteResult(true);
+      ret.showHelp = true;
+      return ret;
+    }
+    default: {
+      if (val === 1 || val === 0) {
+        seal.vars.intSet(ctx, `$outnmubered`, val);
+        let outnumberedText = '寡不敌众规则已'
+        if (val) {
+          outnumberedText += '启用。'
+        } else {
+          outnumberedText += '禁用。'
+        }
+        seal.replyToSender(ctx, msg, `${outnumberedText}`);
+      } else {
+        seal.replyToSender(ctx, msg, `指令错误，请使用“help”查看正确指令。`)
+      }
+      return seal.ext.newCmdExecuteResult(true);
+    }
+  }
+};
+// 将命令注册到扩展中
+ext.cmdMap['outnumbered'] = cmdOutnumbered;   
