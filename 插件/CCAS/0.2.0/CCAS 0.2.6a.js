@@ -133,6 +133,7 @@ function dbCompute(build) {
     db[1] = 6;
   }
   return db;
+  //db含义：伤害加值为`${db[0]}d${db[1]}`
 }
 
 //骰子模拟器
@@ -313,8 +314,12 @@ function parseUserData(input) {
     '矛': 20,
     '投掷': 20,
     humanity: 1,
+    //每回合攻击 atk per round
     apr: 1,
-    tpr: 0
+    //当前回合攻击次数 atk this round
+    atr1: 0,
+    //当前回合受击次数 targeted this round
+    ttr: 0,
   };
   const defaultObj = {
     cname: '张三',
@@ -341,10 +346,12 @@ function parseUserData(input) {
     '投掷': 20,
     age: 30,
     humanity: 1,
-    //每回合攻击
+    //每回合攻击 atk per round
     apr: 1,
-    //当前回合受击次数
-    tpr: 0
+    //当前回合攻击次数 atk this round
+    atr1: 0,
+    //当前回合受击次数 targeted this round
+    ttr: 0,
   };
 
   // 分割输入数据按行处理
@@ -395,8 +402,9 @@ function parseUserData(input) {
 
 //objectArray-string transformer（数据回传函数）
 function antiParseUserData(objectArrayInput = []) {
-  let oatext = `${objectArrayInput.length}\n`;
+  let oatext = ''
   for (let i = 0; i < objectArrayInput.length; i++) {
+    oatext += '\n'
     oatext += objectArrayInput[i].cname + ' ';
     for (const key in objectArrayInput[i]) {
       if (key !== `cname`) {
@@ -829,11 +837,15 @@ cmdCombat.solve = (ctx, msg, cmdArgs) => {
           combatRound = 1
             .seal.vars.intSet(ctx, '$gCombatRound', combatRound)
           seal.replyToSender(ctx, msg, `新的战斗已开启，当前回合数：1`);
+          for (let i = 0; i < CCCharacters.length; i++) {
+            CCCharacters[i].tpr = 0
+          }
         } else {
           if (val === '++' || val === '+') {
             seal.vars.intGet(ctx, '$gCombatRound')
             let CCCharacters = parseUserData(seal.vars.strGet(ctx, `$gCCAS单位数据录入`)[0]);
             for (let i = 0; i < CCCharacters.length; i++) {
+              CCCharacters[i].tpr = 0
             }
           } else {
             if (val === '++') {
@@ -990,17 +1002,9 @@ cmdJoin.solve = (ctx, msg, cmdArgs) => {
       pc.冲锋枪 = seal.vars.intGet(ctx, `冲锋枪`)[0];
       pc.投掷 = seal.vars.intGet(ctx, `投掷`)[0];
       pc.age = seal.vars.intGet(ctx, `年龄`)[0];
-      let pctext = '1\n';
-      pctext += pc.cname + ' ';
-      for (const key in pc) {
-        if (key !== `cname`) {
-          pctext += key + ' ' + pc[key] + ' ';
-        }
-      }
-      let transferTemp = seal.vars.strGet(ctx, `$gCCAS单位数据录入`);
-      pctext += '\n' + transferTemp[0];
-      seal.vars.strSet(ctx, `$gCCAS单位数据录入`, pctext);
-      let CCCharacters = parseUserData(pctext);
+      let CCCharacters = parseUserData(seal.vars.strGet(ctx, `$gCCAS单位数据录入`)[0]);
+      CCCharacters.push(pc)
+      seal.vars.strSet(ctx, `$gCCAS单位数据录入`, antiParseUserData(CCCharacters));
       seal.replyToSender(ctx, msg, `录入成功，${ctx.player.name}已加入本次战斗。本次战斗目前共有${CCCharacters.length}名参与者。`);
     }
       return seal.ext.newCmdExecuteResult(true);
