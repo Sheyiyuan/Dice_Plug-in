@@ -1,0 +1,390 @@
+{
+  "_title": [
+    "COC7e预设数值"
+  ],
+  "_author": [
+    "社亦园（2125107118@qq.com）"
+  ],
+  "_date": [
+    "2024/5/29"
+  ],
+  "_version": [
+    "1.0.0"
+  ],
+  "_brief": [
+    "提供了COC7版规则中的人类与神话生物数据用于CCAS系统。请勿单独抽取"
+  ],
+  "_keys": [
+    "CCASr普通",
+    "CCASrR",
+    "CCASr标准",
+    "CCASrSR",
+    "CCASr精英",
+    "CCASrSSR",
+    "CCASr奈亚化身",
+    "CCASrUR",
+    "CCASr拜亚基",
+    "CCASr钻地魔虫",
+    "CCASr星之彩",
+    "CCASr蠕行者",
+    "CCASr达贡",
+    "CCASr海德拉",
+    "CCASr黑山羊幼崽",
+    "CCASr深潜者",
+    "CCASr混种深潜者",
+    "CCASr巨噬蠕虫",
+    "CCASr空鬼",
+    "CCASr古老者",
+    "CCASr飞水螅",
+    "CCASr无形眷族",
+    "CCASr妖鬼",
+    "CCASr食尸鬼",
+    "CCASr诺弗·刻",
+    "CCASr伊斯之伟大种族",
+    "CCASr恐怖猎手",
+    "CCASr罗伊格尔",
+    "CCASr米-戈",
+    "CCASr夜魇",
+    "CCASr人面鼠",
+    "CCASr潜沙怪",
+    "CCASr蛇人",
+    "CCASr外神仆役",
+    "CCASr夏盖妖虫",
+    "CCASr夏塔克鸟",
+    "CCASr修格斯",
+    "CCASr修格斯主宰",
+    "CCASr克苏鲁的星之眷族",
+    "CCASr星之精",
+    "CCASr乔乔人",
+    "CCASr阿布霍斯",
+    "CCASr阿特拉克·纳克亚",
+    "CCASr阿萨托斯",
+    "CCASr芭丝特",
+    "CCASr昌格纳·方庚",
+    "CCASr克图格亚",
+    "CCASr伟大的克苏鲁",
+    "CCASr赛伊格亚",
+    "CCASr道罗斯",
+    "CCASr埃霍尔特",
+    "CCASr加塔诺托亚",
+    "CCASr格拉基",
+    "CCASr哈斯塔",
+    "CCASr伊塔库亚",
+    "CCASr黄衣之王",
+    "CCASr诺登斯",
+    "CCASr奈亚拉托提普",
+    "CCASr尼约格萨",
+    "CCASr兰-提格斯",
+    "CCASr莎布-尼古拉斯",
+    "CCASr修德梅尔",
+    "CCASr撒托古亚",
+    "CCASr图尔兹查",
+    "CCASr乌波·萨斯拉",
+    "CCASr伊戈罗纳克",
+    "CCASr伊波·兹特尔",
+    "CCASr伊格",
+    "CCASr犹格·索托斯",
+    "CCASr佐斯·奥摩格",
+    "CCASe普通",
+    "CCASeR",
+    "CCASe标准",
+    "CCASeSR",
+    "CCASe精英",
+    "CCASeSSR",
+    "CCASe奈亚化身",
+    "CCASeUR",
+    "CCASe拜亚基",
+    "CCASe钻地魔虫",
+    "CCASe星之彩",
+    "CCASe蠕行者",
+    "CCASe达贡",
+    "CCASe海德拉",
+    "CCASe黑山羊幼崽",
+    "CCASe深潜者",
+    "CCASe混种深潜者",
+    "CCASe巨噬蠕虫",
+    "CCASe空鬼",
+    "CCASe古老者",
+    "CCASe飞水螅",
+    "CCASe无形眷族",
+    "CCASe妖鬼",
+    "CCASe食尸鬼",
+    "CCASe诺弗·刻",
+    "CCASe伊斯之伟大种族",
+    "CCASe恐怖猎手",
+    "CCASe罗伊格尔",
+    "CCASe米-戈",
+    "CCASe夜魇",
+    "CCASe人面鼠",
+    "CCASe潜沙怪",
+    "CCASe蛇人",
+    "CCASe外神仆役",
+    "CCASe夏盖妖虫",
+    "CCASe夏塔克鸟",
+    "CCASe修格斯",
+    "CCASe修格斯主宰",
+    "CCASe克苏鲁的星之眷族",
+    "CCASe星之精",
+    "CCASe乔乔人",
+    "CCASe阿布霍斯",
+    "CCASe阿特拉克·纳克亚",
+    "CCASe阿萨托斯",
+    "CCASe芭丝特",
+    "CCASe昌格纳·方庚",
+    "CCASe克图格亚",
+    "CCASe伟大的克苏鲁",
+    "CCASe赛伊格亚",
+    "CCASe道罗斯",
+    "CCASe埃霍尔特",
+    "CCASe加塔诺托亚",
+    "CCASe格拉基",
+    "CCASe哈斯塔",
+    "CCASe伊塔库亚",
+    "CCASe黄衣之王",
+    "CCASe诺登斯",
+    "CCASe奈亚拉托提普",
+    "CCASe尼约格萨",
+    "CCASe兰-提格斯",
+    "CCASe莎布-尼古拉斯",
+    "CCASe修德梅尔",
+    "CCASe撒托古亚",
+    "CCASe图尔兹查",
+    "CCASe乌波·萨斯拉",
+    "CCASe伊戈罗纳克",
+    "CCASe伊波·兹特尔",
+    "CCASe伊格",
+    "CCASe犹格·索托斯",
+    "CCASe佐斯·奥摩格"
+  ],
+  "CCASr普通": [
+    "str ${D(3,6,5)} dex ${D(3,6,5)} pow ${D(3,6,5)} con ${D(3,6,5)} siz ${D(2,6,5,6)} int ${D(3,6,5)} MOV 8 护甲 0 humanity 1 apr 1 "
+  ],
+  "CCASrR": [
+    "str ${D(3,6,5)} dex ${D(3,6,5)} pow ${D(3,6,5)} con ${D(3,6,5)} siz ${D(2,6,5,6)} int ${D(3,6,5)} MOV 8 护甲 0 humanity 1 apr 1 "
+  ],
+  "CCASr标准": [
+    "str ${D(3,6,5)} dex ${D(3,6,5)} pow ${D(2,6,5,6)} con ${D(3,6,5)} siz ${D(2,6,5,6)} int ${D(3,6,5)} MOV 8 斗殴 ${D(1,6,5,5)} 投掷 ${D(1,6,5,5)} 手枪 ${D(1,6,5,5)} 步枪 ${D(1,6,5,5)} 弓 ${D(1,6,5,5)} 剑术 ${D(1,6,5,5)} 斧 ${D(1,6,5,5)} 矛 ${D(1,6,5,5)} 护甲 0 humanity 1 apr 1 "
+  ],
+  "CCASrSR": [
+    "str ${D(3,6,5)} dex ${D(3,6,5)} pow ${D(2,6,5,6)} con ${D(3,6,5)} siz ${D(2,6,5,6)} int ${D(3,6,5)} MOV 8 斗殴 ${D(1,6,5,5)} 投掷 ${D(1,6,5,5)} 手枪 ${D(1,6,5,5)} 步枪 ${D(1,6,5,5)} 弓 ${D(1,6,5,5)} 剑术 ${D(1,6,5,5)} 斧 ${D(1,6,5,5)} 矛 ${D(1,6,5,5)} 护甲 0 humanity 1 apr 1 "
+  ],
+  "CCASr精英": [
+    "str ${D(2,6,5,6)} dex ${D(2,6,5,6)} pow ${D(3,6,5,6)} con ${D(3,6,5)} siz ${D(2,6,5,6)} int ${D(3,6,5)} MOV 8 斗殴 ${D(1,6,5,11)} 投掷 ${D(1,6,5,11)} 手枪 ${D(1,6,5,11)} 步枪 ${D(1,6,5,11)} 弓 ${D(1,6,5,11)} 剑术 ${D(1,6,5,11)} 斧 ${D(1,6,5,11)} 矛 ${D(1,6,5,11)} 护甲 0 humanity 1 apr 1 "
+  ],
+  "CCASrSSR": [
+    "str ${D(2,6,5,6)} dex ${D(2,6,5,6)} pow ${D(3,6,5,6)} con ${D(3,6,5)} siz ${D(2,6,5,6)} int ${D(3,6,5)} MOV 8 斗殴 ${D(1,6,5,11)} 投掷 ${D(1,6,5,11)} 手枪 ${D(1,6,5,11)} 步枪 ${D(1,6,5,11)} 弓 ${D(1,6,5,11)} 剑术 ${D(1,6,5,11)} 斧 ${D(1,6,5,11)} 矛 ${D(1,6,5,11)} 护甲 0 humanity 1 apr 1 "
+  ],
+  "CCASr奈亚化身": [
+    "str 60 dex 95 pow 500 con 95 siz 55 int 430 MOV 8 斗殴 95 投掷 95 手枪 95 步枪 95 弓 95 剑术 95 斧 95 矛 95 护甲 0 humanity 1 apr 1 "
+  ],
+  "CCASrUR": [
+    "str 60 dex 95 pow 500 con 95 siz 55 int 430 MOV 8 斗殴 95 投掷 95 手枪 95 步枪 95 弓 95 剑术 95 斧 95 矛 95 护甲 0 humanity 1 apr 1 "
+  ],
+  "CCASe普通": [
+    ""
+  ],
+  "CCASeR": [
+    ""
+  ],
+  "CCASe标准": [
+    "str 55 dex 55 pow 65 con 55 siz 65 int 55 MOV 8 斗殴 40 投掷 40 手枪 40 步枪 40 弓 40 剑术 40 斧 40 矛 40 护甲 0 humanity 1 apr 1 "
+  ],
+  "CCASeSR": [
+    "str 55 dex 55 pow 65 con 55 siz 65 int 55 MOV 8 斗殴 40 投掷 40 手枪 40 步枪 40 弓 40 剑术 40 斧 40 矛 40 护甲 0 humanity 1 apr 1 "
+  ],
+  "CCASe精英": [
+    "str 65 dex 65 85 con 55 siz 65 int 55 MOV 8 斗殴 70 投掷 70 手枪 70 步枪 70 弓 70 剑术 70 斧 70 矛 70 护甲 0 humanity 1 apr 1 "
+  ],
+  "CCASeSSR": [
+    "str 65 dex 65 85 con 55 siz 65 int 55 MOV 8 斗殴 70 投掷 70 手枪 70 步枪 70 弓 70 剑术 70 斧 70 矛 70 护甲 0 humanity 1 apr 1 "
+  ],
+  "CCASe奈亚化身": [
+    "str 60 dex 95 pow 500 con 95 siz 55 int 430 MOV 8 斗殴 95 投掷 95 手枪 95 步枪 95 弓 95 剑术 95 斧 95 矛 95 护甲 0 humanity 1 apr 1 "
+  ],
+  "CCASeUR": [
+    "str 60 dex 95 pow 500 con 95 siz 55 int 430 MOV 8 斗殴 95 投掷 95 手枪 95 步枪 95 弓 95 剑术 95 斧 95 矛 95 护甲 0 humanity 1 apr 1 "
+  ],
+  "CCASr拜亚基": [
+    "cname 拜亚基 str ${D(5,6,5)} dex ${D(3,6,5,3)} pow ${D(3,6,5)} con ${D(3,6,5)} siz ${D(5,6,5)} int ${D(3,6,5)} MOV 7 斗殴 55 投掷 20 护甲 0 humanity 2 apr 2 "
+  ],
+  "CCASr钻地魔虫": [
+    "cname 钻地魔虫 str ${D(3,6,25)} dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr星之彩": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr蠕行者": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr达贡&海德拉（特殊深潜者）": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr黑山羊幼崽": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr深潜者": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr混种深潜者": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr巨噬蠕虫": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr空鬼": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr古老者": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr飞水螅": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr无形眷族": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr妖鬼": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr食尸鬼": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr诺弗·刻": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr伊斯之伟大种族": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr恐怖猎手": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr罗伊格尔": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr米-戈": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr夜魇": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr人面鼠": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr潜沙怪": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr蛇人": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr外神仆役": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr夏盖妖虫": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr夏塔克鸟": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr修格斯": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr修格斯主宰": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr克苏鲁的星之眷族": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr星之精": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr乔乔人": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr阿布霍斯": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr阿特拉克·纳克亚": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr阿萨托斯": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr芭丝特": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr昌格纳·方庚": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr克图格亚": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr伟大的克苏鲁": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr赛伊格亚": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr道罗斯": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr埃霍尔特": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr加塔诺托亚": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr格拉基": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr哈斯塔": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr伊塔库亚": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr黄衣之王": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr诺登斯": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr奈亚拉托提普": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr尼约格萨": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr兰-提格斯": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr莎布-尼古拉斯": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr修德梅尔": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr撒托古亚": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr图尔兹查": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr乌波·萨斯拉": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr伊戈罗纳克": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr伊波·兹特尔": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr伊格": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr犹格·索托斯": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ],
+  "CCASr佐斯·奥摩格": [
+    "cname X str [3d6*5] dex [3d6*5] pow [3d6*5] con [3d6*5] siz [(2d6+6)*5] int [(2d6+6)*5] MOV 7 斗殴 25 投掷 20 护甲 0 humanity 0 apr 1 "
+  ]
+}

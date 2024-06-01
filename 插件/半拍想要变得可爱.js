@@ -83,13 +83,9 @@ if (!ext) {
 
 // 这里编写处理函数
 ext.onNotCommandReceived = (ctx, msg) => {
-  console.log(ctx);
   let user = ctx.player.userID;
   let uName = ctx.player.name;
   let message = msg.message;
-  console.log(user);
-  console.log(uName);
-  console.log(message);
   //建立临时变量承接相应的海豹变量
   let Money = seal.vars.intGet(ctx, `$m余额`);
   let tempM = Money[0];
