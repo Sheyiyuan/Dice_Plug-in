@@ -2213,6 +2213,10 @@ cmdmove.solve = (ctx, msg, cmdArgs) => {
           aim = Number(cmdArgs.getArgN(4))
           inputcount++
         }
+        else
+        {
+          dis = Number(dis)
+        }
         /*如果角色选择谨慎行动，那么他可以花费行动点在用于越过险境的技能检定上获得奖励骰。*/
         let action = cmdArgs.getArgN(++inputcount)
         while (action != "") {
@@ -2293,7 +2297,8 @@ cmdmove.solve = (ctx, msg, cmdArgs) => {
                 pldatas[i].pos--;
               }
             }
-            replystr += `${mover}的行动点剩余${pldatas[i].acp}个\n`
+            replystr += `${mover}共计移动了${trans}个单位，`
+            replystr += `行动点剩余${pldatas[i].acp}个\n`
           }
         }
         for (let i = 0; i < mapobj.playernum; i++) {
@@ -2301,7 +2306,6 @@ cmdmove.solve = (ctx, msg, cmdArgs) => {
             mapobj.players[i].pos += trans * dis / Math.abs(dis)
           }
         }
-        replystr += `${mover}共计移动了${trans}个单位`
         seal.replyToSender(ctx, msg, replystr)
         mapobj = mapCheck(mapobj)
         seal.vars.strSet(ctx, `$gChaseMap`, mapObjTOStr(mapobj))
