@@ -59,42 +59,6 @@
 
 //函数库
 
-//MD转图片
-// 引入marked和html2canvas库
-import marked from 'marked';
-import html2canvas from 'html2canvas';
-// 定义一个异步函数，用于将Markdown文本转换为图片
-async function markdownToImage(markdownContent) {
-  // 第一步：使用marked将Markdown文本转换为HTML
-  const html = marked(markdownContent);
-
-  // 第二步：使用html2canvas将生成的HTML渲染到canvas上
-  const canvas = await html2canvas(html, {
-    logging: true,          // 开启日志记录
-    allowTaint: true,       // 允许canvas被污染，这对于跨域图像很重要
-    useCORS: true           // 使用CORS来加载跨源图像
-  });
-
-  // 第三步：从canvas生成图片数据URL
-  const imageDataUrl = canvas.toDataURL();
-
-  // 返回生成的图片数据URL
-  return imageDataUrl;
-}
-/*
-// 使用示例：
-markdownToImage('# 你好，**世界**!')
-    .then(imageDataUrl => {
-        // 输出base64编码的图片数据
-        console.log(imageDataUrl);
-        // 可以通过<img>标签或类似方式在网页中显示此图片
-    })
-    .catch(error => {
-        // 捕获并输出错误信息
-        console.error('将Markdown转换为图片时出错:', error);
-    });
-    */
-
 //计算mov
 function movCompute(str, siz, dex, age = 30) {
   let mov = 8;
@@ -772,6 +736,29 @@ function damagecal(damagestring, db, successrank = 2) {
   return totalDamage;
 }
 
+// // 引入marked和html2canvas库
+// import marked from 'marked';
+// import html2canvas from 'html2canvas';
+
+// // 定义一个异步函数，用于将Markdown文本转换为图片
+// async function markdownToImage(markdownContent) {
+//   // 第一步：使用marked将Markdown文本转换为HTML
+//   const html = marked(markdownContent);
+
+//   // 第二步：使用html2canvas将生成的HTML渲染到canvas上
+//   const canvas = await html2canvas(html, {
+//     logging: true,          // 开启日志记录
+//     allowTaint: true,       // 允许canvas被污染，这对于跨域图像很重要
+//     useCORS: true           // 使用CORS来加载跨源图像
+//   });
+
+//   // 第三步：从canvas生成图片数据URL
+//   const imageDataUrl = canvas.toDataURL();
+
+//   // 返回生成的图片数据URL
+//   return imageDataUrl;
+// }
+
 //============================================================================================//
 
 // 首先检查是否已经存在
@@ -912,6 +899,7 @@ ext.cmdMap['deletenpc'] = cmdDeleteNPC;
 
 //单点属性修改
 //.modify player attribute value
+//.modify map player/hazard pos
 const cmdModify = seal.ext.newCmdItemInfo();
 cmdModify.name = 'modify'; // 指令名字，可用中文
 cmdModify.help = `.modify指令用于修改npc属性
@@ -928,32 +916,55 @@ cmdModify.solve = (ctx, msg, cmdArgs) => {
       return ret;
     }
     default: {
-      let plname = cmdArgs.getArgN(1)
-      let plskill = cmdArgs.getArgN(2)
-      let plvalue = cmdArgs.getArgN(3)
-      let textOL = seal.vars.strGet(ctx, `$gCCAS单位数据录入`)[0]
-      let pls = parseUserData(textOL)
-      for (let plnum = 0; plnum < pls.length; plnum++) {
-        if (pls[plnum].cname === plname) {
-          pls[plnum][plskill] = plvalue
+      if (val === "map")
+      {
+        let mapobj = mapCheck(mapStrToObj(seal.vars.strGet(ctx, `$gChaseMap`)[0]))
+        let xname = cmdArgs.getArgN(2);
+        let pos = cmdArgs.getArgN(3);
+        for (let i = 0; i < mapobj.playernum; i++)
+        {
+          if (mapobj.players[i].cname === xname)
+          {
+            mapobj.players[i].pos = pos;
+          }
         }
-      }
-      let transtext = ""
-      for (let plnum = 0; plnum < pls.length; plnum++) {
-        transtext += pls[plnum].cname + ` `
-        for (var key in pls[plnum]) {
-          transtext += key + ` ` + pls[plnum][key] + ` `
+        for (let i = 0; i < mapobj.hazardnum; i++)
+        {
+          if (mapobj.hazards[i].hname === xname)
+          {
+            mapobj.hazards[i].pos = pos;
+          }
         }
-        transtext += `\n`
+        seal.vars.strSet(ctx, `$gChaseMap`, mapObjTOStr(mapobj))
+        seal.replyToSender(ctx, msg, `${xname}的位置已修改为${pos}`)
+      } else {
+        let plname = cmdArgs.getArgN(1)
+        let plskill = cmdArgs.getArgN(2)
+        let plvalue = cmdArgs.getArgN(3)
+        let textOL = seal.vars.strGet(ctx, `$gCCAS单位数据录入`)[0]
+        let pls = parseUserData(textOL)
+        for (let plnum = 0; plnum < pls.length; plnum++) {
+          if (pls[plnum].cname === plname) {
+            pls[plnum][plskill] = plvalue
+          }
+        }
+        let transtext = ""
+        for (let plnum = 0; plnum < pls.length; plnum++) {
+          transtext += pls[plnum].cname + ` `
+          for (var key in pls[plnum]) {
+            transtext += key + ` ` + pls[plnum][key] + ` `
+          }
+          transtext += `\n`
+        }
+        let textNew = transtext;
+        // combat new
+        const sora = [];
+        seal.vars.strSet(ctx, `$gCCAS单位数据录入`, JSON.stringify(sora))
+        // setnpc
+        // textNew += "\n" + "\n[]";
+        seal.vars.strSet(ctx, `$gCCAS单位数据录入`, textNew);
+        seal.replyToSender(ctx, msg, `${plname}的属性${plskill}已修改为${plvalue}`)
       }
-      let textNew = transtext;
-      // combat new
-      const sora = [];
-      seal.vars.strSet(ctx, `$gCCAS单位数据录入`, JSON.stringify(sora))
-      // setnpc
-      // textNew += "\n" + "\n[]";
-      seal.vars.strSet(ctx, `$gCCAS单位数据录入`, textNew);
-      seal.replyToSender(ctx, msg, `${plname}的属性${plskill}已修改为${plvalue}`)
       return seal.ext.newCmdExecuteResult(true);
     }
   }
@@ -2095,9 +2106,11 @@ cmdChase.solve = (ctx, msg, cmdArgs) => {
       if (val === "new") {
         //new指令可以初始化回合数和地图
         let mapnew = `0 0\n0\n0`;
-        seal.vars.strSet(ctx, '$gCombatRound', `1`)
+        // seal.vars.strSet(ctx, '$gCombatRound', `1`)
         seal.vars.strSet(ctx, `$gChaseMap`, mapnew)
-        seal.replyToSender(ctx, msg, `地图数据已初始化,玩家行动点计算完成`)
+        seal.replyToSender(ctx, msg, `地图数据已初始化`)
+      }
+      else if (val === "count") {
         let pldatas = parseUserData(seal.vars.strGet(ctx, `$gCCAS单位数据录入`)[0])
         //计算行动点
         let minMOV = 0x3f3f3f3f
@@ -2110,6 +2123,7 @@ cmdChase.solve = (ctx, msg, cmdArgs) => {
           pldatas[i].acp = pldatas[i].MOV - minMOV
         }
         seal.vars.strSet(ctx, `$gCCAS单位数据录入`, antiParseUserData(pldatas))
+        seal.replyToSender(ctx, msg, `玩家行动点计算完成`)
       }
       else if (val === "list") {
         let rankCCCharacters = parseUserData(seal.vars.strGet(ctx, `$gCCAS单位数据录入`)[0]);
@@ -2157,15 +2171,30 @@ cmdnewmap.solve = (ctx, msg, cmdArgs) => {
           skill = cmdArgs.getArgN(++inputcount)
           mapstring += `${name} ${pos} ${skill} 2\n`
         }
+        //为每个角色的pos赋值
+        let mapobj = mapCheck(mapStrToObj(mapstring))
+        let pldatas = parseUserData(seal.vars.strGet(ctx, `$gCCAS单位数据录入`)[0])
+        for (let i = 0; i < mapobj.playernum; i++)
+        {
+          for (let j = 0; j < pldatas.length; j++)
+          {
+            if (mapobj.players[i].cname === pldatas[j].cname)
+            {
+              pldatas[j].pos = mapobj.players[i].pos;
+            }
+          }
+        }
+        seal.vars.strSet(ctx, `$gCCAS单位数据录入`, antiParseUserData(pldatas))
+        //储存地图信息
         seal.replyToSender(ctx, msg, `地图设置完成`)
-        // seal.replyToSender(ctx, msg, mapstring)
-        // seal.replyToSender(ctx, msg, mapObjTOStr(mapStrToObj(mapstring)))
-        seal.replyToSender(ctx, msg, mapObjToChart(mapStrToObj(mapstring)))
-        seal.vars.strSet(ctx, `$gChaseMap`, mapObjTOStr(mapStrToObj(mapstring)))
+        seal.replyToSender(ctx, msg, mapObjToChart(mapobj))
+        seal.vars.strSet(ctx, `$gChaseMap`, mapObjTOStr(mapobj))
       }
       if (val === `show`) {
         let mapstring = seal.vars.strGet(ctx, `$gChaseMap`)[0]
-        seal.replyToSender(ctx, msg, mapObjToChart(mapStrToObj(mapstring)))
+        let mapobj = mapCheck(mapStrToObj(mapstring))
+        seal.replyToSender(ctx, msg, mapObjToChart(mapobj))
+        seal.vars.strSet(ctx, `$gChaseMap`, mapObjTOStr(mapobj))
       }
       return seal.ext.newCmdExecuteResult(true);
     }
@@ -2459,4 +2488,4 @@ cmdmove.solve = (ctx, msg, cmdArgs) => {
   }
 };
 // 将命令注册到扩展中
-ext.cmdMap['move'] = cmdmove;   
+ext.cmdMap['move'] = cmdmove;
