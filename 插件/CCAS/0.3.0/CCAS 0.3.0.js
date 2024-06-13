@@ -59,6 +59,42 @@
 
 //函数库
 
+//MD转图片
+// 引入marked和html2canvas库
+import marked from 'marked';
+import html2canvas from 'html2canvas';
+// 定义一个异步函数，用于将Markdown文本转换为图片
+async function markdownToImage(markdownContent) {
+  // 第一步：使用marked将Markdown文本转换为HTML
+  const html = marked(markdownContent);
+
+  // 第二步：使用html2canvas将生成的HTML渲染到canvas上
+  const canvas = await html2canvas(html, {
+    logging: true,          // 开启日志记录
+    allowTaint: true,       // 允许canvas被污染，这对于跨域图像很重要
+    useCORS: true           // 使用CORS来加载跨源图像
+  });
+
+  // 第三步：从canvas生成图片数据URL
+  const imageDataUrl = canvas.toDataURL();
+
+  // 返回生成的图片数据URL
+  return imageDataUrl;
+}
+/*
+// 使用示例：
+markdownToImage('# 你好，**世界**!')
+    .then(imageDataUrl => {
+        // 输出base64编码的图片数据
+        console.log(imageDataUrl);
+        // 可以通过<img>标签或类似方式在网页中显示此图片
+    })
+    .catch(error => {
+        // 捕获并输出错误信息
+        console.error('将Markdown转换为图片时出错:', error);
+    });
+    */
+
 //计算mov
 function movCompute(str, siz, dex, age = 30) {
   let mov = 8;
