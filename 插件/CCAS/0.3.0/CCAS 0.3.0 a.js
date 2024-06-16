@@ -916,22 +916,17 @@ cmdModify.solve = (ctx, msg, cmdArgs) => {
       return ret;
     }
     default: {
-      if (val === "map")
-      {
+      if (val === "map") {
         let mapobj = mapCheck(mapStrToObj(seal.vars.strGet(ctx, `$gChaseMap`)[0]))
         let xname = cmdArgs.getArgN(2);
         let pos = cmdArgs.getArgN(3);
-        for (let i = 0; i < mapobj.playernum; i++)
-        {
-          if (mapobj.players[i].cname === xname)
-          {
+        for (let i = 0; i < mapobj.playernum; i++) {
+          if (mapobj.players[i].cname === xname) {
             mapobj.players[i].pos = pos;
           }
         }
-        for (let i = 0; i < mapobj.hazardnum; i++)
-        {
-          if (mapobj.hazards[i].hname === xname)
-          {
+        for (let i = 0; i < mapobj.hazardnum; i++) {
+          if (mapobj.hazards[i].hname === xname) {
             mapobj.hazards[i].pos = pos;
           }
         }
@@ -2174,12 +2169,9 @@ cmdnewmap.solve = (ctx, msg, cmdArgs) => {
         //为每个角色的pos赋值
         let mapobj = mapCheck(mapStrToObj(mapstring))
         let pldatas = parseUserData(seal.vars.strGet(ctx, `$gCCAS单位数据录入`)[0])
-        for (let i = 0; i < mapobj.playernum; i++)
-        {
-          for (let j = 0; j < pldatas.length; j++)
-          {
-            if (mapobj.players[i].cname === pldatas[j].cname)
-            {
+        for (let i = 0; i < mapobj.playernum; i++) {
+          for (let j = 0; j < pldatas.length; j++) {
+            if (mapobj.players[i].cname === pldatas[j].cname) {
               pldatas[j].pos = mapobj.players[i].pos;
             }
           }
@@ -2278,8 +2270,7 @@ cmdmove.solve = (ctx, msg, cmdArgs) => {
           aim = Number(cmdArgs.getArgN(4))
           inputcount++
         }
-        else
-        {
+        else {
           dis = Number(dis)
         }
         /*如果角色选择谨慎行动，那么他可以花费行动点在用于越过险境的技能检定上获得奖励骰。*/
@@ -2432,6 +2423,8 @@ cmdmove.solve = (ctx, msg, cmdArgs) => {
                       pldatas[i].acp -= _act
                     }
                   }
+                  1
+            00
                 }
                 //险境结算完成后，进行移动
                 trans++;
