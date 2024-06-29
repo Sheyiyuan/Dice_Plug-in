@@ -2108,7 +2108,7 @@ ext.cmdMap['skill'] = cmdSkill;
 
 
 //========================================================================================
-
+/* 
 const cmdOutnumbered = seal.ext.newCmdItemInfo();
 cmdOutnumbered.name = 'outnumbered'; // 指令名字，可用中文
 cmdOutnumbered.help = '用于启用/禁用寡不敌众，0为禁用，1为启用，默认值为1。';
@@ -2138,7 +2138,7 @@ cmdOutnumbered.solve = (ctx, msg, cmdArgs) => {
   }
 };
 // 将命令注册到扩展中
-ext.cmdMap['outnumbered'] = cmdOutnumbered;
+ext.cmdMap['outnumbered'] = cmdOutnumbered; */
 
 //追逐建立，初始化和报表
 //.chase ……

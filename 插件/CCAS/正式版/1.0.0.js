@@ -11,10 +11,10 @@
 /*
 
 主要功能
-1. 通用基本功能 v
+1. 通用基本功能
   1.1 判定建立战斗与追逐
   1.2 NPC 数据录入
-2. 战斗辅助系统 v
+2. 战斗辅助系统
   2.1 自动敏捷排序
     2.1.1 直接排序
     2.1.2 含有突袭的排序
@@ -30,8 +30,6 @@
     3.2.2 实时行动点显示
     3.2.3 险境与障碍标注（含随机险境与障碍）
 */
-
-
 //
 //                       _oo0oo_
 //                      o8888888o
@@ -56,10 +54,6 @@
 //     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //
 //               佛祖保佑         永无BUG
-
-//函数库
-
-//计算mov
 function movCompute(str, siz, dex, age = 30) {
   let mov = 8;
   if (str > siz && dex > siz) {
@@ -88,7 +82,6 @@ function movCompute(str, siz, dex, age = 30) {
   }
   return mov;
 }
-//计算BUILD
 function buildCompute(str, siz) {
   sum = str + siz;
   if (sum >= 2 && sum < 65) {
@@ -117,7 +110,6 @@ function buildCompute(str, siz) {
   }
   return build;
 }
-//计算DB
 function dbCompute(build) {
   let db = [0, 0]
   if (build < 1) {
@@ -133,10 +125,7 @@ function dbCompute(build) {
     db[1] = 6;
   }
   return db;
-  //db含义：伤害加值为`${db[0]}d${db[1]}`
 }
-
-//骰子模拟器
 function D(n, x, k = 1, p = 0, c = 0) {
   let sum = 0;
   for (let i = 0; i < n; i++) {
@@ -148,9 +137,7 @@ function D(n, x, k = 1, p = 0, c = 0) {
   return sumPlus;
 }
 
-//检定
 const successdiscription = ["大失败", "失败", "成功", "困难成功", "极难成功", "大成功"]
-//参数说明：检定规则，检定值，奖励/惩罚骰（奖励骰为正，惩罚骰为负），需求难度（successdiscription[]中对应的索引）
 function Roll(ruleCOC, checkValue, BP = 0, difficulty = 1) {
   let geww = D(1, 10, 1, -1);
   let uiww = D(1, 10, 10, -1);
@@ -170,14 +157,11 @@ function Roll(ruleCOC, checkValue, BP = 0, difficulty = 1) {
     }
     mindice = Math.min(mindice, result)
     maxdice = Math.max(maxdice, result)
-    //Dice.push(Number(result));
   }
   if (BP >= 0) {
     result = mindice
-    //result = Math.min(Dice);
   } else {
     result = maxdice
-    //result = Math.max(Dice);
   }
   let criticalSuccessValue, fumbleValue;
   if (ruleCOC === 0) {
@@ -250,24 +234,18 @@ function Roll(ruleCOC, checkValue, BP = 0, difficulty = 1) {
   } else {
     successRank = 1;
   }
-  // 成功判定
   if (successRank == 2) {
-    // 区分大成功、困难成功、极难成功等
     if (result <= checkValue / 2) {
-      //suffix = "成功(困难)"
       successRank = 3;
     }
     if (result <= checkValue / 5) {
-      //suffix = "成功(极难)"
       successRank = 4;
     }
     if (result <= criticalSuccessValue) {
-      //suffix = "大成功！"
       successRank = 5;
     }
   }
   if (result >= fumbleValue) {
-    //suffix = "大失败！"
     successRank = 0;
   }
   const rollResult = [result, checkValue, successRank];
@@ -279,9 +257,6 @@ function Roll(ruleCOC, checkValue, BP = 0, difficulty = 1) {
   rollResult.push(`检定结果为: D100=${result}/${checkValue},${successdiscription[successRank]}`)
   return rollResult
 }
-
-//骰点字符串分解骰点器
-//ndx
 function dividedice(dicestring) {
   let dividedicenum = dicestring.split("d")
   return D(dividedicenum[0], dividedicenum[1])
@@ -291,10 +266,7 @@ function dividemut(dicestring) {
   let dividedicenum = dicestring.split("d")
   return dividedicenum[0] * dividedicenum[1]
 }
-
-//string-objectArray transformer （数据录入函数）
 function parseUserData(input) {
-  // 默认对象
   const standardObj = {
     '闪避': 25,
     '斗殴': 25,
@@ -313,17 +285,11 @@ function parseUserData(input) {
     '鞭': 5,
     '矛': 20,
     '投掷': 20,
-    //0-邪神 1-人类 2-神话生物
     humanity: 1,
-    //每回合攻击 atk per round
     apr: 1,
-    //当前回合攻击次数 atk this round
     atr: 0,
-    //当前回合受击次数 targeted this round
     ttr: 0,
-    //追逐轮中的位置
     pos: 0,
-    //追逐轮中的行动点
     acp: 0,
   };
   const defaultObj = {
@@ -350,43 +316,29 @@ function parseUserData(input) {
     '矛': 20,
     '投掷': 20,
     age: 30,
-    //0-邪神 1-人类 2-神话生物
     humanity: 1,
-    //每回合攻击 atk per round
     apr: 1,
-    //当前回合攻击次数 atk this round
     atr: 0,
-    //当前回合受击次数 targeted this round
     ttr: 0,
-    //追逐轮中的位置
     pos: 0,
-    //追逐轮中的行动点
     acp: 0x3f3f3f3f,
   };
-
-  // 分割输入数据按行处理
   const lines = input.split('\n');
   const result = [];
 
   for (const line of lines) {
-    // 分割每行数据
     const parts = line.trim().split(' ');
     if (parts.length < 3) continue;
-    // 创建默认对象
     const characteristics = { ...defaultObj };
     characteristics.cname = parts[0];
-    // 处理HP属性
     let HPfinded = false;
-    // 处理属性赋值
     for (let i = 1; i < parts.length; i += 2) {
       const key = parts[i];
-      //如果这里没有给HP赋值，就在下面赋值
       if (key === "HP")
         HPfinded = true;
       const value = parseInt(parts[i + 1], 10);
       characteristics[key] = isNaN(value) ? parts[i + 1] : value; // 如果是数字则转换，否则保持原样
     }
-    // 计算衍生属性
     characteristics.HPM = Math.floor((characteristics.con + characteristics.siz) / 10)
     if (!HPfinded)
       characteristics.HP = Math.floor((characteristics.con + characteristics.siz) / 10)
@@ -395,7 +347,6 @@ function parseUserData(input) {
     }
     characteristics.BUILD = buildCompute(characteristics.str, characteristics.siz);
     characteristics.DB = dbCompute(characteristics.BUILD);
-    //人类技能下限校准
     if (characteristics.humanity) {
       for (const key in standardObj) {
         characteristics[key] <= standardObj[key] ? characteristics[key] = standardObj[key] : characteristics[key];
@@ -410,7 +361,6 @@ function parseUserData(input) {
   return result;
 };
 
-//objectArray-string transformer（数据回传函数）
 function antiParseUserData(objectArrayInput = []) {
   let oatext = ''
   for (let i = 0; i < objectArrayInput.length; i++) {
@@ -425,21 +375,7 @@ function antiParseUserData(objectArrayInput = []) {
   return oatext
 }
 
-//地图转换函数
-/*
-地图字符串格式：
-起始位置 结束位置
-玩家数量n
-玩家1 位置1
-玩家2 位置2
-………………
-玩家n 位置n
-险境数量n
-险境1 位置1
-险境2 位置2
-………………
-险境n 位置n
-*/
+
 function mapStrToObj(mapstr) {
   let strpart = mapstr.split("\n");
   let plnums = Number(strpart[1])
@@ -491,14 +427,12 @@ function mapObjToChart(mapobj) {
   let chart = ""
   let begin = mapobj.mapbegin
   let end = mapobj.mapend
-  //第一行：数据
   let line1 = `|`
   for (let i = begin; i < end; i++) {
     line1 += `${i}| |`
   }
   line1 += `${end}|\n`
 
-  //第二行：险境（需保证每个位置只有1个险境，险境的位置用其左侧的数表示）
   let line2 = `|`
   for (let i = begin; i < end; i++) {
     let hazardthis = " "
@@ -510,7 +444,6 @@ function mapObjToChart(mapobj) {
   }
   line2 += ` |\n`
 
-  // //第三行开始是角色
   let linech = ""
   let arrpl = []
   let maxsize = 0
@@ -538,7 +471,6 @@ function mapObjToChart(mapobj) {
     linech += `\n`
   }
 
-  //返回表格字符串
   chart = line1 + line2 + linech
   return chart
 }
@@ -561,7 +493,6 @@ function mapObjToRows(mapobj) {
   return str
 }
 
-//排序结果
 function mapAttributeShow(mapobj, pldatas) {
   let str = ``;
   for (let i = 0; i < mapobj.playernum; i++) {
@@ -600,7 +531,7 @@ function mapCheck(mapobj) {
   return mapobj;
 }
 
-// 普通排序
+
 function qsort(data) {
   data.sort(function cmp(a, b) {
     if (a.dex === b.dex)
@@ -609,10 +540,8 @@ function qsort(data) {
   })
 }
 
-//首位突袭的情况
 function sfind(data, point = "") {
   let pointpart = []
-  // qsort(data, 0, data.length - 1)
   for (let i = 0; i < data.length; i++) {
     if (data[i].cname === point) {
       pointpart.push(data[i]);
@@ -624,7 +553,6 @@ function sfind(data, point = "") {
   return pointpart;
 }
 
-//使用先攻检定的行动排序
 function qsortRoll(data) {
   let dex, dice;
   for (let i = 0; i < data.length; i++) {
@@ -644,7 +572,6 @@ function qsortRoll(data) {
   })
 }
 
-//排序结果
 function ranks(arr) {
   let rankList = "\n";
   for (let i = 0; i < arr.length; i++) {
@@ -657,7 +584,6 @@ function ranks(arr) {
   return rankList;
 }
 
-//排序结果（先攻）
 function ranksRoll(arr) {
   let rankList = "\n";
   for (let i = 0; i < arr.length; i++) {
@@ -670,17 +596,14 @@ function ranksRoll(arr) {
   return rankList;
 }
 
-//轻量简化排序输出
 function simple_ranks(arr) {
   let rankList = "";
   for (let i = 0; i < arr.length; i++) {
-    //rankList += "\n" + arr[i].cname + "    敏捷：" + arr[i].dex + "    斗殴：" + arr[i].斗殴;
     rankList += `\n${arr[i].cname}    HP：${arr[i].HP}/${arr[i].HPM}    敏捷：${arr[i].dex}    斗殴：${arr[i].斗殴}`
   }
   return rankList;
 }
 
-//轻量简化排序输出(先攻)
 function simple_ranksRoll(arr) {
   let rankList = "";
   const successdiscription = ["大失败", "失败", "成功", "困难成功", "极难成功", "大成功"];
@@ -691,7 +614,6 @@ function simple_ranksRoll(arr) {
   return rankList;
 }
 
-//单位列表
 function list(arr) {
   let cnameList = "\n";
   for (let i = 0; i < arr.length; i++) {
@@ -700,16 +622,14 @@ function list(arr) {
   return cnameList;
 }
 
-// 修复后的伤害计算函数 感谢AI的大力debug
 function damagecal(damagestring, db, successrank = 2) {
   let throughout = 0;
-  if (damagestring.includes('*')) { // 使用正确的转义字符
+  if (damagestring.includes('*')) {
     throughout = 1;
   }
-  // 移除字符串中的'*'符号以方便计算
-  let damagetext = damagestring.replace(/\*/g, ''); // 使用正则表达式替换
+  let damagetext = damagestring.replace(/\*/g, '');
 
-  let damageparts = damagetext.split('+'); // 更改变量名为damageparts以避免与循环变量混淆
+  let damageparts = damagetext.split('+');
   let totalDamage = 0;
 
   for (let i = 0; i < damageparts.length; i++) {
@@ -736,7 +656,7 @@ function damagecal(damagestring, db, successrank = 2) {
           partDamage += Math.floor((Number(db[0] * db[1]) + Number(D(db[0], db[1]))) / 2);
         }
       }
-    } else if (!isNaN(damagePart[0]) && damagePart[0] >= 0 && damagePart[0] <= 100) { // 添加缺失的条件判断开始括号，并处理数字直接伤害
+    } else if (!isNaN(damagePart[0]) && damagePart[0] >= 0 && damagePart[0] <= 100) {
       partDamage += Number(damagePart[0]);
     } else if (damagePart[0].includes('d')) {
       let diceParts = damagePart[0].split('d');
@@ -754,7 +674,6 @@ function damagecal(damagestring, db, successrank = 2) {
       }
     }
 
-    // 应用减伤部分
     for (let j = 1; j < damagePart.length; j++) {
       partDamage -= Number(damagePart[j]);
     }
@@ -762,7 +681,6 @@ function damagecal(damagestring, db, successrank = 2) {
     totalDamage += partDamage;
   }
 
-  // 确保总伤害不为负数
   if (totalDamage < 0) {
     totalDamage = 0;
   }
@@ -770,45 +688,15 @@ function damagecal(damagestring, db, successrank = 2) {
   return totalDamage;
 }
 
-// // 引入marked和html2canvas库
-// import marked from 'marked'
-// import html2canvas from 'html2canvas'
-
-// // 定义一个异步函数，用于将Markdown文本转换为图片
-// async function markdownToImage(markdownContent) {
-//   // 第一步：使用marked将Markdown文本转换为HTML
-//   const html = marked(markdownContent);
-
-//   // 第二步：使用html2canvas将生成的HTML渲染到canvas上
-//   const canvas = await html2canvas(html, {
-//     logging: true,          // 开启日志记录
-//     allowTaint: true,       // 允许canvas被污染，这对于跨域图像很重要
-//     useCORS: true           // 使用CORS来加载跨源图像
-//   });
-
-//   // 第三步：从canvas生成图片数据URL
-//   const imageDataUrl = canvas.toDataURL();
-
-//   // 返回生成的图片数据URL
-//   return imageDataUrl;
-// }
-
-//============================================================================================//
-
-// 首先检查是否已经存在
 let ext = seal.ext.find('Combat&Chases Assist System');
 if (!ext) {
-  // 不存在，那么建立扩展，名为，作者“”，版本1.0.0
   ext = seal.ext.new('Combat&Chases Assist System', '社亦园 冰红茶', '0.2.5');
-  // 注册扩展
   seal.ext.register(ext);
 }
-//============================================================================================//
 
-//NPC 数据录入
 let arrCharacter = []
 const cmdSetNpc = seal.ext.newCmdItemInfo();
-cmdSetNpc.name = 'setnpc'; // 指令名字，可用中文
+cmdSetNpc.name = 'setnpc';
 cmdSetNpc.help = '功能：批量添加NPC（非玩家角色）至战斗或追逐中。\n使用格式：\n.setnpc [NPC数量]\n /NPC名称1 属性1 属性2 ... \n/NPC名称2 ...\n参数说明：\n[NPC数量]：1到20的整数，表示要添加的NPC数量。\n/NPC名称 属性...：每组NPC信息间以 / 分隔，信息内属性用空格分隔。最后一个NPC信息后可省略结尾的 /';
 cmdSetNpc.solve = (ctx, msg, cmdArgs) => {
   let val = cmdArgs.getArgN(1);
@@ -849,14 +737,10 @@ cmdSetNpc.solve = (ctx, msg, cmdArgs) => {
     }
   };
 }
-// 将命令注册到扩展中
 ext.cmdMap['setnpc'] = cmdSetNpc;
 
-//============================================================================================//
-
-//指定NPC数据删除
 const cmdDeleteNPC = seal.ext.newCmdItemInfo();
-cmdDeleteNPC.name = 'deletenpc'; // 指令名字，可用中文
+cmdDeleteNPC.name = 'deletenpc';
 cmdDeleteNPC.help = `删除指定数量的单位（1到20之间）:
 .deletenpc 数量 单位名称1 单位名称2 ...单位名称N
 其中“数量”是一个1到20之间的整数，后面可以跟多个单位名称，每个名称之间以空格分隔。例如，删除3个单位：
@@ -874,7 +758,6 @@ cmdDeleteNPC.solve = (ctx, msg, cmdArgs) => {
     }
     default: {
       if ((val >= 1 && val <= 20) || cmdArgs.getArgN(2) === "") {
-        //确认要删去的单位的数量与名称
         let inputcount = 1;
         const bin = []
         if (val >= 1 && val <= 20) {
@@ -886,7 +769,6 @@ cmdDeleteNPC.solve = (ctx, msg, cmdArgs) => {
         else {
           bin.push(val)
         }
-        //从线上读取已储存的参战单位数据到本地
         let textOL = seal.vars.strGet(ctx, `$gCCAS单位数据录入`)[0]
         let pls = parseUserData(textOL)
         let backtext = textOL.trim().split("\n")
@@ -911,11 +793,8 @@ cmdDeleteNPC.solve = (ctx, msg, cmdArgs) => {
           }
         }
         let textNew = transtext;
-        // combat new
         const sora = [];
         seal.vars.strSet(ctx, `$gCCAS单位数据录入`, JSON.stringify(sora))
-        // setnpc
-        //textNew += "\n" + "\n[]";
         seal.vars.strSet(ctx, `$gCCAS单位数据录入`, textNew);
         seal.replyToSender(ctx, msg, `已删除${bin}共${bin.length}名NPC`)
         return seal.ext.newCmdExecuteResult(true);
@@ -926,16 +805,10 @@ cmdDeleteNPC.solve = (ctx, msg, cmdArgs) => {
     }
   }
 };
-// 将命令注册到扩展中
 ext.cmdMap['deletenpc'] = cmdDeleteNPC;
 
-//============================================================================================//
-
-//单点属性修改
-//.modify player attribute value
-//.modify map player/hazard pos
 const cmdModify = seal.ext.newCmdItemInfo();
-cmdModify.name = 'modify'; // 指令名字，可用中文
+cmdModify.name = 'modify';
 cmdModify.help = `.modify指令用于修改npc属性
 输入格式：.modify 单位名称 属性名称 属性值
 特别注意：体格，DB，最大生命值无法修改，修改生命值时属性名称请填写HP（大写）
@@ -986,11 +859,8 @@ cmdModify.solve = (ctx, msg, cmdArgs) => {
           transtext += `\n`
         }
         let textNew = transtext;
-        // combat new
         const sora = [];
         seal.vars.strSet(ctx, `$gCCAS单位数据录入`, JSON.stringify(sora))
-        // setnpc
-        // textNew += "\n" + "\n[]";
         seal.vars.strSet(ctx, `$gCCAS单位数据录入`, textNew);
         seal.replyToSender(ctx, msg, `${plname}的属性${plskill}已修改为${plvalue}`)
       }
@@ -998,12 +868,10 @@ cmdModify.solve = (ctx, msg, cmdArgs) => {
     }
   }
 };
-// 将命令注册到扩展中
 ext.cmdMap['modify'] = cmdModify;
 
-//============================================================================================//
 const cmdClear = seal.ext.newCmdItemInfo();
-cmdClear.name = 'ccasclear'; // 指令名字，可用中文
+cmdClear.name = 'ccasclear';
 cmdClear.help = '';
 cmdClear.solve = (ctx, msg, cmdArgs) => {
   let val = cmdArgs.getArgN(1);
@@ -1021,15 +889,11 @@ cmdClear.solve = (ctx, msg, cmdArgs) => {
     }
   }
 };
-// 将命令注册到扩展中
 ext.cmdMap['ccasclear'] = cmdClear;
-//============================================================================================//
 
-//设置默认战斗规则
 let ruleCombat = 1
-//规则设置指令
 const cmdCombat = seal.ext.newCmdItemInfo();
-cmdCombat.name = 'combat'; // 指令名字，可用中文
+cmdCombat.name = 'combat';
 cmdCombat.help = `a. 设置战斗规则
 格式: .combat < 规则编号 >
 描述: 更改当前战斗规则。规则编号必须是1至3之间的整数，每个编号代表一种不同的战斗规则配置:
@@ -1103,7 +967,6 @@ cmdCombat.solve = (ctx, msg, cmdArgs) => {
                 seal.vars.strSet(ctx, `$g当前排序`, resultRank)
                 seal.replyToSender(ctx, msg, `行动顺序：\n${resultRank}`);
               }
-              // 带突袭的检定，格式为.combat rank 张三(cname) 50(成功率)
               else if (ranktype === 2) {
                 if (rank_method >= 1 && rank_method <= 20) {
                   let inputcount = 2;
@@ -1147,7 +1010,6 @@ cmdCombat.solve = (ctx, msg, cmdArgs) => {
                     rank_method = cmdArgs.getArgN(4);
                   let sup_level = Roll(ruleCOC, sup_rate);
                   if (sup_level[3] === 0) {
-                    //失败
                     qsort(rankCCCharacters, 0, rankCCCharacters.length - 1);
                     let resultRank;
                     if (rank_method === "simple")
@@ -1157,7 +1019,6 @@ cmdCombat.solve = (ctx, msg, cmdArgs) => {
                     seal.replyToSender(ctx, msg, `突袭检定${sup_level[0]}\/${sup_level[1]}${successdiscription[sup_level[2]]}\n行动顺序：\n${resultRank}`);
                   }
                   else {
-                    //成功
                     qsort(rankCCCharacters, 0, rankCCCharacters.length - 1);
                     rankCCCharacters = sfind(rankCCCharacters, sup_name);
                     let resultRank;
@@ -1187,70 +1048,11 @@ cmdCombat.solve = (ctx, msg, cmdArgs) => {
   }
 }
   ;
-// 将命令注册到扩展中
 ext.cmdMap['combat'] = cmdCombat;
 
-//============================================================================================//
-
-// const cmdChase = seal.ext.newCmdItemInfo();
-// cmdChase.name = 'chase'; // 指令名字，可用中文
-// cmdChase.help = '';
-// cmdChase.solve = (ctx, msg, cmdArgs) => {
-//   let val = cmdArgs.getArgN(1);
-//   switch (val) {
-//     case 'help': {
-//       const ret = seal.ext.newCmdExecuteResult(true);
-//       ret.showHelp = true;
-//       return ret;
-//     }
-//     default: {
-//       if (val === 'new') {
-//         let combatRound = 1
-//         seal.vars.intSet(ctx, '$gCombatRound', combatRound)
-//         seal.replyToSender(ctx, msg, `新的追逐已开启，当前回合数：1`);
-//         for (let i = 0; i < CCCharacters.length; i++) {
-//           CCCharacters[i].ttr = 0
-//         }
-//       } else if (val === '++' || val === '+' || val === 'next') {
-//         seal.vars.intGet(ctx, '$gCombatRound')
-//         let CCCharacters = parseUserData(seal.vars.strGet(ctx, `$gCCAS单位数据录入`)[0]);
-//         for (let i = 0; i < CCCharacters.length; i++) {
-//           CCCharacters[i].ttr = 0
-//           CCCharacters[i].atr = 0
-//         }
-//       } else if (val === 'rank') {
-//         let rankCCCharacters = parseUserData(seal.vars.strGet(ctx, `$gCCAS单位数据录入`)[0]);
-//         let ruleCOC = ctx.group.cocRuleIndex;
-//         let rank_method = cmdArgs.getArgN(2);
-//         qsortRoll(rankCCCharacters, 0, rankCCCharacters.length - 1);
-//         let resultRank;
-//         if (rank_method === "simple") {
-//           resultRank = simple_ranksRoll(rankCCCharacters);
-//         }
-//         else {
-//           resultRank = ranksRoll(rankCCCharacters);
-//         }
-//         seal.vars.strSet(ctx, `$g当前排序`, resultRank)
-//         seal.replyToSender(ctx, msg, `行动顺序：\n${resultRank}`);
-//       } else if (val == 'list') {
-//         let rankCCCharacters = parseUserData(seal.vars.strGet(ctx, `$gCCAS单位数据录入`)[0]);
-//         let resultList = list(rankCCCharacters);
-//         seal.replyToSender(ctx, msg, `参战单位列表：\n${resultList}`);
-//       } else {
-//         seal.replyToSender(ctx, msg, `指令错误，请使用“help”查看正确指令。`);
-//       }
-
-//       return seal.ext.newCmdExecuteResult(true);
-//     }
-//   }
-// };
-// // 将命令注册到扩展中
-// ext.cmdMap['chase'] = cmdChase;
-
-//============================================================================================//
 
 const cmdJoin = seal.ext.newCmdItemInfo();
-cmdJoin.name = 'join'; // 指令名字，可用中文
+cmdJoin.name = 'join';
 cmdJoin.help = '';
 cmdJoin.solve = (ctx, msg, cmdArgs) => {
   let val = cmdArgs.getArgN(1);
@@ -1261,7 +1063,6 @@ cmdJoin.solve = (ctx, msg, cmdArgs) => {
       return ret;
     }
     default: {
-      //获取pc数据
       const pc = {}
       pc.cname = ctx.player.name;
       pc.str = seal.vars.intGet(ctx, `力量`)[0];
@@ -1294,16 +1095,11 @@ cmdJoin.solve = (ctx, msg, cmdArgs) => {
       return seal.ext.newCmdExecuteResult(true);
   }
 };
-// 将命令注册到扩展中
 ext.cmdMap['join'] = cmdJoin;
-//============================================================================================//
 
-//伤害计算
-//.atk # atker skill damege aim1 infect aim2 infect aim3 infect etc.
-//.atk % atker skill damege aim1 aim2 aim3 etc.
-//.atk skill damege aim1 infect aim2 infect aim3 infect etc.
+
 const cmdAtk = seal.ext.newCmdItemInfo();
-cmdAtk.name = 'atk'; // 指令名字，可用中文
+cmdAtk.name = 'atk';
 cmdAtk.help = `.atk指令可用于计算伤害
   使用方法：.atk 模式 攻击者 技能 伤害 攻击目标1 攻击目标2 攻击目标3 etc.
 
@@ -1325,8 +1121,6 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
     }
     default: {
       if (val === '#') {
-        // # 标记 受击方允许反击/闪避，适用于斗殴等
-        // % 标记 受击方无法反击/闪避，适用于射击等(还没写)
         let atkername = cmdArgs.getArgN(2)
         let atkerskill = cmdArgs.getArgN(3)
         let atkerdamage = cmdArgs.getArgN(4)
@@ -1358,10 +1152,8 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
         }
         let combatpldata = parseUserData(seal.vars.strGet(ctx, `$gCCAS单位数据录入`)[0])
         let ruleCOC = ctx.group.cocRuleIndex
-        //暴力O(n^3)算法，直接遍历找到攻击者和反击者，或许可以优化成二分O(n*logn*logn)但我不会
         for (let atkerfinder = 0; atkerfinder < combatpldata.length; atkerfinder++) {
           if (combatpldata[atkerfinder].cname === atkername) {
-            //消耗1点行动点
             if (combatpldata[atkerfinder].acp <= 0) {
               seal.replyToSender(ctx, msg, `行动点不足，攻击不成立`)
               break;
@@ -1369,19 +1161,14 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
             combatpldata[atkerfinder].acp--;
             let atkerskilldata = combatpldata[atkerfinder][atkerskill];
             let atkreply = ""
-            //骰点在这里
             let atkerroll = Roll(ruleCOC, atkerskilldata, atkerbp)
-            //for (let aimfinder = 0; aimfinder < combatpldata.length; aimfinder++) {
             for (let aimerfinder = 0; aimerfinder < aim.length; aimerfinder++) {
-              //for (let aimerfinder = 0; aimerfinder < aim.length; aimerfinder++) {
               for (let aimfinder = 0; aimfinder < combatpldata.length; aimfinder++) {
 
                 if (combatpldata[aimfinder].cname === aim[aimerfinder]) {
                   if (infect[aimerfinder] === "闪避") {
-                    //骰闪避
                     let aimerroll = Roll(ruleCOC, combatpldata[aimfinder].闪避, aimbp[aimerfinder])
                     if (atkerroll[2] > aimerroll[2] && atkerroll[2] >= 2) {
-                      //闪避失败，计算伤害(贯穿写了)
                       let totaldamage = Number(damagecal(atkerdamage, combatpldata[atkerfinder].DB, atkerroll[2]))
 
                       combatpldata[aimfinder].HP -= totaldamage
@@ -1395,7 +1182,6 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
                         if (combatpldata[aimfinder].HP === 0)
                           atkreply += `${aim[aimerfinder]}受到重伤且生命值为0，陷入濒死状态\n`
                         else {
-                          //重伤判定是否昏迷
                           let aimerconroll = Roll(ruleCOC, combatpldata[aimfinder].con)
                           if (aimerconroll[2] >= 2)
                             atkreply += `${aim[aimerfinder]}受到重伤，体质检定${aimerconroll[0]}/${aimerconroll[1]}${successdiscription[aimerconroll[2]]},未陷入昏迷`
@@ -1411,10 +1197,8 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
                     }
                   }
                   else if (infect[aimerfinder] === "反击") {
-                    //骰反击
                     let aimerroll = Roll(ruleCOC, combatpldata[aimfinder].斗殴, aimbp[aimerfinder])
                     if (atkerroll[2] >= aimerroll[2] && atkerroll[2] >= 2) {
-                      //反击失败，效果和闪避一样
                       let totaldamage = Number(damagecal(atkerdamage, combatpldata[atkerfinder].DB, atkerroll[2]))
 
                       combatpldata[aimfinder].HP -= totaldamage
@@ -1428,7 +1212,6 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
                         if (combatpldata[aimfinder].HP === 0)
                           atkreply += `${aim[aimerfinder]}受到重伤且生命值为0，陷入濒死状态`
                         else {
-                          //重伤判定是否昏迷
                           let aimerconroll = Roll(ruleCOC, combatpldata[aimfinder].con)
                           if (aimerconroll[2] >= 2)
                             atkreply += `${aim[aimerfinder]}受到重伤，体质检定${aimerconroll[0]}/${aimerconroll[1]}${successdiscription[aimerconroll[2]]},未陷入昏迷`
@@ -1438,16 +1221,12 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
                         atkreply += `\n`
                       }
                       atkreply += `\n`
-                      // 此时反击未触发
                     }
                     else if (atkerroll[2] <= aimerroll[2] && aimerroll[2] >= 2) {
-                      //伤害计算
                       let totaldamage = Number(damagecal(conteratk[aimerfinder], combatpldata[aimfinder].DB))
-                      //反击成功造成伤害
                       combatpldata[atkerfinder].HP -= totaldamage
                       atkreply += `${atkername}对${aim[aimerfinder]}的攻击${atkerroll[0]}/${atkerroll[1]}${successdiscription[atkerroll[2]]}\n`
                       atkreply += `${aim[aimerfinder]}的反击${aimerroll[0]}/${aimerroll[1]}${successdiscription[aimerroll[2]]},反击成功，造成伤害${totaldamage}\n`
-                      //判定重伤和昏迷
                       if (combatpldata[atkerfinder].HP < 0) {
                         combatpldata[atkerfinder].HP = 0
                         atkreply += `${atkername}生命值归零\n`
@@ -1472,10 +1251,8 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
                   }
                   else {
                     let aimkey = infect[aimerfinder]
-                    //骰反击
                     let aimerroll = Roll(ruleCOC, combatpldata[aimfinder][aimkey], aimbp[aimerfinder])
                     if (atkerroll[2] >= aimerroll[2] && atkerroll[2] >= 2) {
-                      //反击失败，效果和闪避一样
                       let totaldamage = Number(damagecal(atkerdamage, combatpldata[atkerfinder].DB, atkerroll[2]))
 
                       combatpldata[aimfinder].HP -= totaldamage
@@ -1489,7 +1266,6 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
                         if (combatpldata[aimfinder].HP === 0)
                           atkreply += `${aim[aimerfinder]}受到重伤且生命值为0，陷入濒死状态`
                         else {
-                          //重伤判定是否昏迷
                           let aimerconroll = Roll(ruleCOC, combatpldata[aimfinder].con)
                           if (aimerconroll[2] >= 2)
                             atkreply += `${aim[aimerfinder]}受到重伤，体质检定${aimerconroll[0]}/${aimerconroll[1]}${successdiscription[aimerconroll[2]]},未陷入昏迷`
@@ -1499,16 +1275,12 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
                         atkreply += `\n`
                       }
                       atkreply += `\n`
-                      // 此时反击未触发
                     }
                     else if (atkerroll[2] <= aimerroll[2] && aimerroll[2] >= 2) {
-                      //伤害计算
                       let totaldamage = Number(damagecal(conteratk[aimerfinder], combatpldata[aimfinder].DB))
-                      //反击成功造成伤害
                       combatpldata[atkerfinder].HP -= totaldamage
                       atkreply += `${atkername}对${aim[aimerfinder]}的攻击${atkerroll[0]}/${atkerroll[1]}${successdiscription[atkerroll[2]]}\n`
                       atkreply += `${aim[aimerfinder]}的反击${aimerroll[0]}/${aimerroll[1]}${successdiscription[aimerroll[2]]},反击成功，造成伤害${totaldamage}\n`
-                      //判定重伤和昏迷
                       if (combatpldata[atkerfinder].HP < 0) {
                         combatpldata[atkerfinder].HP = 0
                         atkreply += `${atkername}生命值归零\n`
@@ -1538,7 +1310,6 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
             seal.replyToSender(ctx, msg, atkreply)
           }
         }
-        // 将受到伤害后的人物属性重新上传
         let atktrans = ""
         for (let atktransnum = 0; atktransnum < combatpldata.length; atktransnum++) {
           atktrans += combatpldata[atktransnum].cname + ` `
@@ -1547,15 +1318,12 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
           }
           atktrans += "\n"
         }
-        // combat new
         const sora = [];
         seal.vars.strSet(ctx, `$gCCAS单位数据录入`, JSON.stringify(sora));
-        // setnpc
         atktrans += "\n" + "\n[]";
         seal.vars.strSet(ctx, `$gCCAS单位数据录入`, atktrans);
 
       } else if (val === `%`) {
-        // kp使用的不允许闪避/反击的部分
         let atkername = cmdArgs.getArgN(2)
         let atkerskill = cmdArgs.getArgN(3)
         let atkerdamage = cmdArgs.getArgN(4)
@@ -1572,10 +1340,8 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
 
         let combatpldata = parseUserData(seal.vars.strGet(ctx, `$gCCAS单位数据录入`)[0])
         let ruleCOC = ctx.group.cocRuleIndex
-        //暴力O(n^3)算法，直接遍历找到攻击者和反击者，或许可以优化成二分O(n*logn*logn)但我不会
         for (let atkerfinder = 0; atkerfinder < combatpldata.length; atkerfinder++) {
           if (combatpldata[atkerfinder].cname === atkername) {
-            //消耗1点行动点
             if (combatpldata[atkerfinder].acp <= 0) {
               seal.replyToSender(ctx, msg, `行动点不足，攻击不成立`)
               break;
@@ -1583,15 +1349,12 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
             combatpldata[atkerfinder].acp--
             let atkerskilldata = combatpldata[atkerfinder][atkerskill];
             let atkreply = ""
-            //骰点在这里
             let atkerroll = Roll(ruleCOC, atkerskilldata, atkerbp)
             for (let aimerfinder = 0; aimerfinder < aim.length; aimerfinder++) {
               for (let aimfinder = 0; aimfinder < combatpldata.length; aimfinder++) {
                 if (combatpldata[aimfinder].cname === aim[aimerfinder]) {
                   if (atkerroll[2] >= 2) {
-                    //这里直接把闪避失败的贴过来了
                     let totaldamage = Number(damagecal(atkerdamage, combatpldata[atkerfinder].DB, atkerroll[2]))
-                    //计算伤害后更新数据
                     combatpldata[aimfinder].HP -= totaldamage
                     atkreply += `${atkername}对${aim[aimerfinder]}的攻击${atkerroll[0]}/${atkerroll[1]}${successdiscription[atkerroll[2]]}\n`
                     atkreply += `${aim[aimerfinder]}受到伤害${totaldamage}\n`
@@ -1603,7 +1366,6 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
                       if (combatpldata[aimfinder].HP === 0)
                         atkreply += `${aim[aimerfinder]}受到重伤且生命值为0，陷入濒死状态\n`
                       else {
-                        //重伤判定是否昏迷
                         let aimerconroll = Roll(ruleCOC, combatpldata[aimfinder].con)
                         if (aimerconroll[2] >= 2)
                           atkreply += `${aim[aimerfinder]}受到重伤，体质检定${aimerconroll[0]}/${aimerconroll[1]}${successdiscription[aimerconroll[2]]},未陷入昏迷`
@@ -1623,7 +1385,6 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
             seal.replyToSender(ctx, msg, atkreply)
           }
         }
-        //最后同样的更新数据
         let atktrans = ""
         for (let atktransnum = 0; atktransnum < combatpldata.length; atktransnum++) {
           atktrans += combatpldata[atktransnum].cname + ` `
@@ -1632,14 +1393,11 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
           }
           atktrans += "\n"
         }
-        // combat new
         const sora = [];
         seal.vars.strSet(ctx, `$gCCAS单位数据录入`, JSON.stringify(sora));
-        // setnpc
         atktrans += "\n" + "\n[]";
         seal.vars.strSet(ctx, `$gCCAS单位数据录入`, atktrans);
       } else {
-        //pl使用的包含反击/闪避的伤害计算
         let atkername = ctx.player.name;
         let atkerskill = cmdArgs.getArgN(1)
         let atkerdamage = cmdArgs.getArgN(2)
@@ -1668,10 +1426,8 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
           }
           inputpl = cmdArgs.getArgN(++inputcount)
         }
-        //暴力O(n^3)算法，直接遍历找到攻击者和反击者，或许可以优化成二分O(n*logn*logn)但我不会
         for (let atkerfinder = 0; atkerfinder < combatpldata.length; atkerfinder++) {
           if (combatpldata[atkerfinder].cname === atkername) {
-            //消耗1点行动点
             if (combatpldata[atkerfinder].acp <= 0) {
               seal.replyToSender(ctx, msg, `行动点不足，攻击不成立`)
               break;
@@ -1679,17 +1435,14 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
             combatpldata[atkerfinder].acp--
             let atkerskilldata = combatpldata[atkerfinder][atkerskill];
             let atkreply = ""
-            //骰点在这里
             let atkerroll = Roll(ruleCOC, atkerskilldata)
             for (let aimerfinder = 0; aimerfinder < aim.length; aimerfinder++) {
               for (let aimfinder = 0; aimfinder < combatpldata.length; aimfinder++) {
 
                 if (combatpldata[aimfinder].cname === aim[aimerfinder]) {
                   if (infect[aimerfinder] === "闪避") {
-                    //骰闪避
                     let aimerroll = Roll(ruleCOC, combatpldata[aimfinder].闪避, aimbp[aimerfinder])
                     if (atkerroll[2] > aimerroll[2] && atkerroll[2] >= 2) {
-                      //闪避失败，计算伤害
                       let totaldamage = Number(damagecal(atkerdamage, combatpldata[atkerfinder].DB, atkerroll[2]))
                       combatpldata[aimfinder].HP -= totaldamage
                       atkreply += `${atkername}对${aim[aimerfinder]}的攻击${atkerroll[0]}/${atkerroll[1]}${successdiscription[atkerroll[2]]}\n`
@@ -1702,7 +1455,6 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
                         if (combatpldata[aimfinder].HP === 0)
                           atkreply += `${aim[aimerfinder]}受到重伤且生命值为0，陷入濒死状态\n`
                         else {
-                          //重伤判定是否昏迷
                           let aimerconroll = Roll(ruleCOC, combatpldata[aimfinder].con)
                           if (aimerconroll[2] >= 2)
                             atkreply += `${aim[aimerfinder]}受到重伤，体质检定${aimerconroll[0]}/${aimerconroll[1]}${successdiscription[aimerconroll[2]]},未陷入昏迷`
@@ -1718,10 +1470,8 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
                     }
                   }
                   else if (infect[aimerfinder] === "反击") {
-                    //骰反击
                     let aimerroll = Roll(ruleCOC, combatpldata[aimfinder].斗殴, aimbp[aimerfinder])
                     if (atkerroll[2] >= aimerroll[2] && atkerroll[2] >= 2) {
-                      //反击失败，效果和闪避一样
                       let totaldamage = Number(damagecal(atkerdamage, combatpldata[atkerfinder].DB, atkerroll[2]))
                       combatpldata[aimfinder].HP -= totaldamage
                       atkreply += `${atkername}对${aim[aimerfinder]}的攻击${atkerroll[0]}/${atkerroll[1]}${successdiscription[atkerroll[2]]}\n`
@@ -1734,7 +1484,6 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
                         if (combatpldata[aimfinder].HP === 0)
                           atkreply += `${aim[aimerfinder]}受到重伤且生命值为0，陷入濒死状态`
                         else {
-                          //重伤判定是否昏迷
                           let aimerconroll = Roll(ruleCOC, combatpldata[aimfinder].con)
                           if (aimerconroll[2] >= 2)
                             atkreply += `${aim[aimerfinder]}受到重伤，体质检定${aimerconroll[0]}/${aimerconroll[1]}${successdiscription[aimerconroll[2]]},未陷入昏迷`
@@ -1744,15 +1493,12 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
                         atkreply += `\n`
                       }
                       atkreply += `\n`
-                      // 此时反击未触发
                     }
                     else if (atkerroll[2] <= aimerroll[2] && aimerroll[2] >= 2) {
                       let totaldamage = Number(damagecal(conteratk[aimerfinder], combatpldata[aimfinder].DB))
-                      //反击成功造成伤害
                       combatpldata[atkerfinder].HP -= totaldamage
                       atkreply += `${atkername}对${aim[aimerfinder]}的攻击${atkerroll[0]}/${atkerroll[1]}${successdiscription[atkerroll[2]]}\n`
                       atkreply += `${aim[aimerfinder]}的反击${aimerroll[0]}/${aimerroll[1]}${successdiscription[aimerroll[2]]},反击成功，造成伤害${totaldamage}\n`
-                      //判定重伤和昏迷
                       if (combatpldata[atkerfinder].HP < 0) {
                         combatpldata[atkerfinder].HP = 0
                         atkreply += `${atkername}生命值归零\n`
@@ -1777,10 +1523,8 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
                   }
                   else {
                     let aimkey = infect[aimerfinder]
-                    //骰反击
                     let aimerroll = Roll(ruleCOC, combatpldata[aimfinder][aimkey], aimbp[aimerfinder])
                     if (atkerroll[2] >= aimerroll[2] && atkerroll[2] >= 2) {
-                      //反击失败，效果和闪避一样
                       let totaldamage = Number(damagecal(atkerdamage, combatpldata[atkerfinder].DB, atkerroll[2]))
 
                       combatpldata[aimfinder].HP -= totaldamage
@@ -1794,7 +1538,6 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
                         if (combatpldata[aimfinder].HP === 0)
                           atkreply += `${aim[aimerfinder]}受到重伤且生命值为0，陷入濒死状态`
                         else {
-                          //重伤判定是否昏迷
                           let aimerconroll = Roll(ruleCOC, combatpldata[aimfinder].con)
                           if (aimerconroll[2] >= 2)
                             atkreply += `${aim[aimerfinder]}受到重伤，体质检定${aimerconroll[0]}/${aimerconroll[1]}${successdiscription[aimerconroll[2]]},未陷入昏迷`
@@ -1804,16 +1547,12 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
                         atkreply += `\n`
                       }
                       atkreply += `\n`
-                      // 此时反击未触发
                     }
                     else if (atkerroll[2] <= aimerroll[2] && aimerroll[2] >= 2) {
-                      //伤害计算
                       let totaldamage = Number(damagecal(conteratk[aimerfinder], combatpldata[aimfinder].DB))
-                      //反击成功造成伤害
                       combatpldata[atkerfinder].HP -= totaldamage
                       atkreply += `${atkername}对${aim[aimerfinder]}的攻击${atkerroll[0]}/${atkerroll[1]}${successdiscription[atkerroll[2]]}\n`
                       atkreply += `${aim[aimerfinder]}的反击${aimerroll[0]}/${aimerroll[1]}${successdiscription[aimerroll[2]]},反击成功，造成伤害${totaldamage}\n`
-                      //判定重伤和昏迷
                       if (combatpldata[atkerfinder].HP < 0) {
                         combatpldata[atkerfinder].HP = 0
                         atkreply += `${atkername}生命值归零\n`
@@ -1843,7 +1582,6 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
             seal.replyToSender(ctx, msg, atkreply)
           }
         }
-        // 将受到伤害后的人物属性重新上传
         let atktrans = ""
         for (let atktransnum = 0; atktransnum < combatpldata.length; atktransnum++) {
           atktrans += combatpldata[atktransnum].cname + ` `
@@ -1852,31 +1590,20 @@ cmdAtk.solve = (ctx, msg, cmdArgs) => {
           }
           atktrans += "\n"
         }
-        // combat new
         const sora = [];
         seal.vars.strSet(ctx, `$gCCAS单位数据录入`, JSON.stringify(sora));
-        // setnpc
         atktrans += "\n" + "\n[]";
         seal.vars.strSet(ctx, `$gCCAS单位数据录入`, atktrans);
 
       }
-      // } else {
-      //   seal.replyToSender(ctx, msg, `指令错误，请使用“.combat help”查看正确指令。`)
-      // }
       return seal.ext.newCmdExecuteResult(true);
     }
   }
 };
-// 将命令注册到扩展中
 ext.cmdMap['atk'] = cmdAtk;
 
-//========================================================================================
-
-//战技代骰
-//.skill # atker skill aimer (infect)
-//.skill skill aimer (infect) //(pl用)
 const cmdSkill = seal.ext.newCmdItemInfo();
-cmdSkill.name = 'skill'; // 指令名字，可用中文
+cmdSkill.name = 'skill';
 cmdSkill.help = `.skill指令可用于代骰战技
   使用方法：.skill 模式 攻击者 技能 攻击目标
 
@@ -1912,7 +1639,6 @@ cmdSkill.solve = (ctx, msg, cmdArgs) => {
         let ruleCOC = ctx.group.cocRuleIndex
         for (let atkerfinder = 0; atkerfinder < combatpldata.length; atkerfinder++) {
           if (combatpldata[atkerfinder].cname === atkername) {
-            //消耗1点行动点
             if (combatpldata[atkerfinder].acp <= 0) {
               seal.replyToSender(ctx, msg, `行动点不足，攻击不成立`)
               break;
@@ -1941,7 +1667,6 @@ cmdSkill.solve = (ctx, msg, cmdArgs) => {
                   let aimerskilldata = combatpldata[aimerfinder].斗殴
                   let aimerroll = Roll(ruleCOC, aimerskilldata, aimerbp)
                   if (atkerroll[2] >= aimerroll[2] && atkerroll[2] >= 2) {
-                    // 反击失败，效果等同闪避
                     seal.replyToSender(ctx, msg, `${atkername}承受${punishroll}个惩罚骰，${atkerroll[0]}/${atkerroll[1]}${successdiscription[atkerroll[2]]}\n${aimername}的反击（斗殴）${aimerroll[0]}/${aimerroll[1]}${successdiscription[aimerroll[2]]}\n反击失败，战技使用成功，请玩家自行修改效果`)
                   }
                   else if (aimerroll < 2) {
@@ -1965,7 +1690,6 @@ cmdSkill.solve = (ctx, msg, cmdArgs) => {
             }
           }
         }
-        // 将受到伤害后的人物属性重新上传
         let atktrans = ""
         for (let atktransnum = 0; atktransnum < combatpldata.length; atktransnum++) {
           atktrans += combatpldata[atktransnum].cname + ` `
@@ -1974,10 +1698,8 @@ cmdSkill.solve = (ctx, msg, cmdArgs) => {
           }
           atktrans += "\n"
         }
-        // combat new
         const sora = [];
         seal.vars.strSet(ctx, `$gCCAS单位数据录入`, JSON.stringify(sora));
-        // setnpc
         atktrans += "\n" + "\n[]";
         seal.vars.strSet(ctx, `$gCCAS单位数据录入`, atktrans);
       } else if (val === "%") {
@@ -1991,7 +1713,6 @@ cmdSkill.solve = (ctx, msg, cmdArgs) => {
         let ruleCOC = ctx.group.cocRuleIndex
         for (let atkerfinder = 0; atkerfinder < combatpldata.length; atkerfinder++) {
           if (combatpldata[atkerfinder].cname === atkername) {
-            //消耗1点行动点
             if (combatpldata[atkerfinder].acp <= 0) {
               seal.replyToSender(ctx, msg, `行动点不足，攻击不成立`)
               break;
@@ -2029,7 +1750,6 @@ cmdSkill.solve = (ctx, msg, cmdArgs) => {
         let ruleCOC = ctx.group.cocRuleIndex
         for (let atkerfinder = 0; atkerfinder < combatpldata.length; atkerfinder++) {
           if (combatpldata[atkerfinder].cname === atkername) {
-            //消耗1点行动点
             if (combatpldata[atkerfinder].acp <= 0) {
               seal.replyToSender(ctx, msg, `行动点不足，攻击不成立`)
               break;
@@ -2058,7 +1778,6 @@ cmdSkill.solve = (ctx, msg, cmdArgs) => {
                   let aimerskilldata = combatpldata[aimerfinder].斗殴
                   let aimerroll = Roll(ruleCOC, aimerskilldata, aimerbp)
                   if (atkerroll[2] >= aimerroll[2] && atkerroll[2] >= 2) {
-                    // 反击失败，效果等同闪避
                     seal.replyToSender(ctx, msg, `${atkername}承受${punishroll}个惩罚骰，${atkerroll[0]}/${atkerroll[1]}${successdiscription[atkerroll[2]]}\n${aimername}的反击（斗殴）${aimerroll[0]}/${aimerroll[1]}${successdiscription[aimerroll[2]]}\n反击失败，战技使用成功，请玩家自行修改效果`)
                   }
                   else if (aimerroll < 2) {
@@ -2082,7 +1801,6 @@ cmdSkill.solve = (ctx, msg, cmdArgs) => {
             }
           }
         }
-        // 将受到伤害后的人物属性重新上传
         let atktrans = ""
         for (let atktransnum = 0; atktransnum < combatpldata.length; atktransnum++) {
           atktrans += combatpldata[atktransnum].cname + ` `
@@ -2091,73 +1809,18 @@ cmdSkill.solve = (ctx, msg, cmdArgs) => {
           }
           atktrans += "\n"
         }
-        // combat new
         const sora = [];
         seal.vars.strSet(ctx, `$gCCAS单位数据录入`, JSON.stringify(sora));
-        // setnpc
         atktrans += "\n" + "\n[]";
         seal.vars.strSet(ctx, `$gCCAS单位数据录入`, atktrans);
       }
-      // else
-      //   return seal.ext.newCmdExecuteResult(true);
     }
   }
 };
-// 将命令注册到扩展中
 ext.cmdMap['skill'] = cmdSkill;
 
-
-//========================================================================================
-
-const cmdOutnumbered = seal.ext.newCmdItemInfo();
-cmdOutnumbered.name = 'outnumbered'; // 指令名字，可用中文
-cmdOutnumbered.help = '用于启用/禁用寡不敌众，0为禁用，1为启用，默认值为1。';
-cmdOutnumbered.solve = (ctx, msg, cmdArgs) => {
-  let val = cmdArgs.getArgN(1);
-  switch (val) {
-    case 'help': {
-      const ret = seal.ext.newCmdExecuteResult(true);
-      ret.showHelp = true;
-      return ret;
-    }
-    default: {
-      if (val == 1 || val == 0) {
-        seal.vars.intSet(ctx, `$goutnmubered`, val);
-        let outnumberedText = '寡不敌众规则已'
-        if (val) {
-          outnumberedText += '启用。'
-        } else {
-          outnumberedText += '禁用。'
-        }
-        seal.replyToSender(ctx, msg, `${outnumberedText}`);
-      } else {
-        seal.replyToSender(ctx, msg, `指令错误，请使用“help”查看正确指令。`)
-      }
-      return seal.ext.newCmdExecuteResult(true);
-    }
-  }
-};
-// 将命令注册到扩展中
-ext.cmdMap['outnumbered'] = cmdOutnumbered;
-
-//追逐建立，初始化和报表
-//.chase ……
-/*
-地图字符串格式：
-起始位置 结束位置
-玩家数量n
-玩家1 位置1
-玩家2 位置2
-………………
-玩家n 位置n
-险境数量n
-险境1 位置1 技能1 难度1(set中不支持)
-险境2 位置2 技能2 难度2(set中不支持)
-………………
-险境n 位置n
-*/
 const cmdChase = seal.ext.newCmdItemInfo();
-cmdChase.name = 'chase'; // 指令名字，可用中文
+cmdChase.name = 'chase';
 cmdChase.help = '';
 cmdChase.solve = (ctx, msg, cmdArgs) => {
   let val = cmdArgs.getArgN(1);
@@ -2169,15 +1832,12 @@ cmdChase.solve = (ctx, msg, cmdArgs) => {
     }
     default: {
       if (val === "new") {
-        //new指令可以初始化回合数和地图
         let mapnew = `0 0\n0\n0`;
-        // seal.vars.strSet(ctx, '$gCombatRound', `1`)
         seal.vars.strSet(ctx, `$gChaseMap`, mapnew)
         seal.replyToSender(ctx, msg, `地图数据已初始化`)
       }
       else if (val === "count") {
         let pldatas = parseUserData(seal.vars.strGet(ctx, `$gCCAS单位数据录入`)[0])
-        //计算行动点
         let minMOV = 0x3f3f3f3f
         for (let i = 0; i < pldatas.length; i++) {
           if (pldatas[i].MOV < minMOV) {
@@ -2199,11 +1859,10 @@ cmdChase.solve = (ctx, msg, cmdArgs) => {
     }
   }
 };
-// 将命令注册到扩展中
 ext.cmdMap['chase'] = cmdChase;
 
 const cmdnewmap = seal.ext.newCmdItemInfo();
-cmdnewmap.name = 'map'; // 指令名字，可用中文
+cmdnewmap.name = 'map';
 cmdnewmap.help = '';
 cmdnewmap.solve = (ctx, msg, cmdArgs) => {
   let val = cmdArgs.getArgN(1);
@@ -2236,7 +1895,6 @@ cmdnewmap.solve = (ctx, msg, cmdArgs) => {
           skill = cmdArgs.getArgN(++inputcount)
           mapstring += `${name} ${pos} ${skill} 2\n`
         }
-        //为每个角色的pos赋值
         let mapobj = mapCheck(mapStrToObj(mapstring))
         let pldatas = parseUserData(seal.vars.strGet(ctx, `$gCCAS单位数据录入`)[0])
         for (let i = 0; i < mapobj.playernum; i++) {
@@ -2247,7 +1905,6 @@ cmdnewmap.solve = (ctx, msg, cmdArgs) => {
           }
         }
         seal.vars.strSet(ctx, `$gCCAS单位数据录入`, antiParseUserData(pldatas))
-        //储存地图信息
         seal.replyToSender(ctx, msg, `地图设置完成`)
         seal.replyToSender(ctx, msg, mapObjToRows(mapobj))
         seal.vars.strSet(ctx, `$gChaseMap`, mapObjTOStr(mapobj))
@@ -2256,21 +1913,21 @@ cmdnewmap.solve = (ctx, msg, cmdArgs) => {
         let mapstring = seal.vars.strGet(ctx, `$gChaseMap`)[0]
         let pldatas = parseUserData(seal.vars.strGet(ctx, `$gCCAS单位数据录入`)[0])
         let mapobj = mapCheck(mapStrToObj(mapstring))
-        seal.replyToSender(ctx, msg, mapObjToRows(mapobj))//show
+        seal.replyToSender(ctx, msg, mapObjToRows(mapobj))
         seal.vars.strSet(ctx, `$gChaseMap`, mapObjTOStr(mapobj))
       }
       if (val === `str`) {
         let mapstring = seal.vars.strGet(ctx, `$gChaseMap`)[0]
         let pldatas = parseUserData(seal.vars.strGet(ctx, `$gCCAS单位数据录入`)[0])
         let mapobj = mapCheck(mapStrToObj(mapstring))
-        seal.replyToSender(ctx, msg, mapObjTOStr(mapobj))//str
+        seal.replyToSender(ctx, msg, mapObjTOStr(mapobj))
         seal.vars.strSet(ctx, `$gChaseMap`, mapObjTOStr(mapobj))
       }
       if (val === `coord` || val === `xy`) {
         let mapstring = seal.vars.strGet(ctx, `$gChaseMap`)[0]
         let pldatas = parseUserData(seal.vars.strGet(ctx, `$gCCAS单位数据录入`)[0])
         let mapobj = mapCheck(mapStrToObj(mapstring))
-        seal.replyToSender(ctx, msg, mapAttributeShow(mapobj, pldatas))//xy
+        seal.replyToSender(ctx, msg, mapAttributeShow(mapobj, pldatas))
         seal.vars.strSet(ctx, `$gChaseMap`, mapObjTOStr(mapobj))
       }
 
@@ -2278,13 +1935,11 @@ cmdnewmap.solve = (ctx, msg, cmdArgs) => {
     }
   }
 };
-// 将命令注册到扩展中
+
 ext.cmdMap['map'] = cmdnewmap;
 
-//险境创建
-//.hazard name pos skill (difficulty)
 const cmdnewhazard = seal.ext.newCmdItemInfo();
-cmdnewhazard.name = 'newhazard'; // 指令名字，可用中文
+cmdnewhazard.name = 'newhazard';
 cmdnewhazard.help = '';
 cmdnewhazard.solve = (ctx, msg, cmdArgs) => {
   let val = cmdArgs.getArgN(1);
@@ -2326,16 +1981,11 @@ cmdnewhazard.solve = (ctx, msg, cmdArgs) => {
     }
   }
 };
-// 将命令注册到扩展中
 ext.cmdMap['newhazard'] = cmdnewhazard;
 ext.cmdMap['hazard'] = cmdnewhazard;
 
-
-//移动
-//.move # player distance(+x,-x) action(n)
-// dis向右为正，向左为负，action处依次输入在对应险境处使用行动点的个数
 const cmdmove = seal.ext.newCmdItemInfo();
-cmdmove.name = 'move'; // 指令名字，可用中文
+cmdmove.name = 'move';
 cmdmove.help = '';
 cmdmove.solve = (ctx, msg, cmdArgs) => {
   let val = cmdArgs.getArgN(1);
@@ -2359,7 +2009,6 @@ cmdmove.solve = (ctx, msg, cmdArgs) => {
         else {
           dis = Number(dis)
         }
-        /*如果角色选择谨慎行动，那么他可以花费行动点在用于越过险境的技能检定上获得奖励骰。*/
         let action = cmdArgs.getArgN(++inputcount)
         while (action != "") {
           act.push(action)
@@ -2368,12 +2017,11 @@ cmdmove.solve = (ctx, msg, cmdArgs) => {
             action = 0;
         }
         let pldatas = parseUserData(seal.vars.strGet(ctx, `$gCCAS单位数据录入`)[0])
-        // seal.replyToSender(ctx, msg, seal.vars.strGet(ctx, `$gChaseMap`)[0])
         let mapobj = mapStrToObj(seal.vars.strGet(ctx, `$gChaseMap`)[0])
         let ruleCOC = ctx.group.cocRuleIndex
         let replystr = ""
-        let trans = Number(0); //移动距离
-        let hazcount = Number(0); //障碍计数
+        let trans = Number(0);
+        let hazcount = Number(0);
         for (let i = 0; i < pldatas.length; i++) {
           if (mover === pldatas[i].cname) {
             if (dis === `to`) {
@@ -2382,13 +2030,10 @@ cmdmove.solve = (ctx, msg, cmdArgs) => {
             else {
               aim = dis + pldatas[i].pos
             }
-            //如果此时发现总行动点不足以支撑预期需要，则直接退出判定（等会写）
             if (dis > 0) {
-              //考虑到会有行动点不足的情况出现，遍历路程中的每个点
               for (let loc = pldatas[i].pos; loc < aim; loc++) {
                 if (pldatas[i].acp <= 0)
                   break;
-                //遇到险境的特殊情况
                 for (let j = 0; j < mapobj.hazardnum; j++) {
                   if (mapobj.hazards[j].pos === loc) {
                     hazcount++
@@ -2405,18 +2050,15 @@ cmdmove.solve = (ctx, msg, cmdArgs) => {
                     }
                   }
                 }
-                //险境结算完成后，进行移动
                 trans++;
                 pldatas[i].acp--;
                 pldatas[i].pos++;
               }
             }
             else {
-              //考虑到会有行动点不足的情况出现，遍历路程中的每个点
               for (let loc = pldatas[i].pos; loc > aim; loc--) {
                 if (pldatas[i].acp <= 0)
                   break;
-                //遇到险境的特殊情况
                 for (let j = 0; j < mapobj.hazardnum; j++) {
                   if (mapobj.hazards[j].pos + 1 === loc) {
                     hazcount++
@@ -2433,7 +2075,6 @@ cmdmove.solve = (ctx, msg, cmdArgs) => {
                     }
                   }
                 }
-                //险境结算完成后，进行移动
                 trans++;
                 pldatas[i].acp--;
                 pldatas[i].pos--;
@@ -2463,7 +2104,6 @@ cmdmove.solve = (ctx, msg, cmdArgs) => {
           aim = Number(cmdArgs.getArgN(2))
           inputcount++
         }
-        /*如果角色选择谨慎行动，那么他可以花费行动点在用于越过险境的技能检定上获得奖励骰。*/
         let action = cmdArgs.getArgN(++inputcount)
         while (action != "") {
           act.push(action)
@@ -2472,12 +2112,11 @@ cmdmove.solve = (ctx, msg, cmdArgs) => {
             action = 0;
         }
         let pldatas = parseUserData(seal.vars.strGet(ctx, `$gCCAS单位数据录入`)[0])
-        // seal.replyToSender(ctx, msg, seal.vars.strGet(ctx, `$gChaseMap`)[0])
         let mapobj = mapStrToObj(seal.vars.strGet(ctx, `$gChaseMap`)[0])
         let ruleCOC = ctx.group.cocRuleIndex
         let replystr = ""
-        let trans = Number(0); //移动距离
-        let hazcount = Number(0); //障碍计数
+        let trans = Number(0);
+        let hazcount = Number(0);
         for (let i = 0; i < pldatas.length; i++) {
           if (mover === pldatas[i].cname) {
             if (dis === `to`) {
@@ -2487,13 +2126,10 @@ cmdmove.solve = (ctx, msg, cmdArgs) => {
               aim = dis + pldatas[i].pos
             }
             dis = Number(dis)
-            //如果此时发现总行动点不足以支撑预期需要，则直接退出判定（等会写）
             if (dis > 0) {
-              //考虑到会有行动点不足的情况出现，遍历路程中的每个点
               for (let loc = pldatas[i].pos; loc < aim; loc++) {
                 if (pldatas[i].acp <= 0)
                   break;
-                //遇到险境的特殊情况
                 for (let j = 0; j < mapobj.hazardnum; j++) {
                   if (mapobj.hazards[j].pos === loc) {
                     hazcount++
@@ -2510,19 +2146,15 @@ cmdmove.solve = (ctx, msg, cmdArgs) => {
                     }
                   }
                 }
-                //险境结算完成后，进行移动
                 trans++;
                 pldatas[i].acp--;
                 pldatas[i].pos++;
               }
             }
             else {
-              //与向右移动的情况相似
-              //考虑到会有行动点不足的情况出现，遍历路程中的每个点
               for (let loc = pldatas[i].pos; loc > aim; loc--) {
                 if (pldatas[i].acp <= 0)
                   break;
-                //遇到险境的特殊情况
                 for (let j = 0; j < mapobj.hazardnum; j++) {
                   if (mapobj.hazards[j].pos + 1 === loc) {
                     hazcount++
@@ -2539,7 +2171,6 @@ cmdmove.solve = (ctx, msg, cmdArgs) => {
                     }
                   }
                 }
-                //险境结算完成后，进行移动
                 trans++;
                 pldatas[i].acp--;
                 pldatas[i].pos--;
@@ -2564,5 +2195,4 @@ cmdmove.solve = (ctx, msg, cmdArgs) => {
     }
   }
 };
-// 将命令注册到扩展中
 ext.cmdMap['move'] = cmdmove;
