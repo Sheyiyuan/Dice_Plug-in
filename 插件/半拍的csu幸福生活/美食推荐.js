@@ -6,7 +6,7 @@
 // @timestamp    1721650628
 // 2024-07-22 20:17:08
 // @license      MIT
-// @homepageURL  https://github.com/sealdice/javascript
+// @homepageURL  https://github.com/Sheyiyuan/Dice_Plug-in
 // ==/UserScript==
 
 //函数区
