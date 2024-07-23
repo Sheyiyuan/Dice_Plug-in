@@ -2423,8 +2423,6 @@ cmdmove.solve = (ctx, msg, cmdArgs) => {
                       pldatas[i].acp -= _act
                     }
                   }
-                  1
-            00
                 }
                 //险境结算完成后，进行移动
                 trans++;
