@@ -61,7 +61,7 @@ cmdExercise.solve = (ctx, msg, cmdArgs) => {
                 //发送随机文案
                 seal.replyToSender(ctx, msg, `${LeadingText[D(1, LeadingText.length, 1, -1, 0)]}`);
                 //发送随机题目
-                seal.replyToSender(ctx, msg, `[CQ:image,file=http://8.137.88.145:8000/JM/JM${D(1, 54)}.jpg]`);
+                seal.replyToSender(ctx, msg, `[CQ:image,file=https://sheyiyuan.oss-cn-chengdu.aliyuncs.com/images/JM/JM${D(1, 54)}.jpg]`);
             } else {
                 seal.replyToSender(ctx, msg, `没有找到${val}的题目，请使用“.mmk help”查看帮助`);
             }

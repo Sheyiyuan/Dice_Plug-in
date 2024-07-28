@@ -124,61 +124,65 @@ cmdLN.solve = (ctx, msg, cmdArgs) => {
     }
     default: {
       if (val) {
-        if (!meatCount && !vegetableCount) {
-          //在all中随机选取val个配菜并返回菜单和价格
-          let menu = "";
-          let price = 10;
-          let randomList = [];
-          for (let i = 0; i < val; i++) {
-            let r;
-            do {
-              r = D(1, allList.length, 1, 0, 0) - 1;
-            } while (!randomListCheck(r, randomList));
-            randomList.push(r);
-            //获取配菜名称
-            let name = allList[r];
-            //获取配菜价格
-            let p = all[name];
-            menu += name + " ";
-            price += p;
+        if (val <= 6) {
+          if (!meatCount && !vegetableCount) {
+            //在all中随机选取val个配菜并返回菜单和价格
+            let menu = "";
+            let price = 10;
+            let randomList = [];
+            for (let i = 0; i < val; i++) {
+              let r;
+              do {
+                r = D(1, allList.length, 1, 0, 0) - 1;
+              } while (!randomListCheck(r, randomList));
+              randomList.push(r);
+              //获取配菜名称
+              let name = allList[r];
+              //获取配菜价格
+              let p = all[name];
+              menu += name + " ";
+              price += p;
+            }
+            let reply = `${ctx.player.name}老师的炒卤菜单：\n` + menu + "\n总计" + price + "元";
+            seal.replyToSender(ctx, msg, reply);
+          } else if (-val == (-meatCount - vegetableCount)) {
+            //在meat中选取meatCount个配菜，在vegetable中选取vegetableCount个配菜，并返回菜单和价格
+            let menu = "";
+            let price = 10;
+            let randomList = [];
+            for (let i = 0; i < meatCount; i++) {
+              let r;
+              do {
+                r = D(1, meatList.length, 1, 0, 0) - 1;
+              } while (!randomListCheck(r, randomList));
+              randomList.push(r);
+              //获取配菜名称
+              let name = meatList[r];
+              //获取配菜价格
+              let p = meat[name];
+              menu += name + " ";
+              price += p;
+            }
+            for (let i = 0; i < vegetableCount; i++) {
+              let r;
+              do {
+                r = D(1, vegetableList.length, 1, 0, 0) - 1;
+              } while (!randomListCheck(r, randomList));
+              randomList.push(r);
+              //获取配菜名称
+              let name = vegetableList[r];
+              //获取配菜价格
+              let p = vegetable[name];
+              menu += name + " ";
+              price += p;
+            }
+            let reply = `${ctx.player.name}老师的炒卤菜单：\n` + menu + "\n总计" + price + "元";
+            seal.replyToSender(ctx, msg, reply);
+          } else {
+            seal.replyToSender(ctx, msg, "参数错误，请使用help查看正确指令。");
           }
-          let reply = `${ctx.player.name}老师的炒卤菜单：\n` + menu + "\n总计" + price + "元";
-          seal.replyToSender(ctx, msg, reply);
-        } else if (-val == (-meatCount - vegetableCount)) {
-          //在meat中选取meatCount个配菜，在vegetable中选取vegetableCount个配菜，并返回菜单和价格
-          let menu = "";
-          let price = 10;
-          let randomList = [];
-          for (let i = 0; i < meatCount; i++) {
-            let r;
-            do {
-              r = D(1, meatList.length, 1, 0, 0) - 1;
-            } while (!randomListCheck(r, randomList));
-            randomList.push(r);
-            //获取配菜名称
-            let name = meatList[r];
-            //获取配菜价格
-            let p = meat[name];
-            menu += name + " ";
-            price += p;
-          }
-          for (let i = 0; i < vegetableCount; i++) {
-            let r;
-            do {
-              r = D(1, vegetableList.length, 1, 0, 0) - 1;
-            } while (!randomListCheck(r, randomList));
-            randomList.push(r);
-            //获取配菜名称
-            let name = vegetableList[r];
-            //获取配菜价格
-            let p = vegetable[name];
-            menu += name + " ";
-            price += p;
-          }
-          let reply = `${ctx.player.name}老师的炒卤菜单：\n` + menu + "\n总计" + price + "元";
-          seal.replyToSender(ctx, msg, reply);
         } else {
-          seal.replyToSender(ctx, msg, "参数错误，请使用help查看正确指令。");
+          seal.replyToSender(ctx, msg, "不可以点这么多啦，怎么可能装得下嘛？！");
         }
       }
     }
