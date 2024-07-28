@@ -1,0 +1,36 @@
+{
+    "_title": [ "BA tarot" ],
+    "_author": [ "散华" ],
+    "_date": [ "2024-07-28" ],
+    "_updateDate": [ "2024-07-28" ],
+    "_brief": [ "仅作交流学习使用，侵删" ],
+    "_version": [ "0.1" ],
+    "_license": [ "CC-BY-NC-SA 4.0" ],
+
+    "塔罗牌": [
+      "愚者[图:./asstes/tarot/0.png]",
+      "魔术师[图:./asstes/tarot/1.png]",
+      "女祭司[图:./asstes/tarot/2.png]",
+      "女皇[图:./asstes/tarot/3.png]",
+      "皇帝[图:./asstes/tarot/4.png]",
+      "教皇[图:./asstes/tarot/5.png]",
+      "恋人[图:./asstes/tarot/6.png]",
+      "战车[图:./asstes/tarot/7.png]",
+      "力量[图:./asstes/tarot/8.png]",
+      "隐者[图:./asstes/tarot/9.png]",
+      "命运之轮[图:./asstes/tarot/10.png]",
+      "正义[图:./asstes/tarot/11.png]",
+      "倒吊人[图:./asstes/tarot/12.png]",
+      "死神[图:./asstes/tarot/13.png]",
+      "节制[图:./asstes/tarot/14.png]",
+      "恶魔[图:./asstes/tarot/15.png]",
+      "塔[图:./asstes/tarot/16.png]",
+      "星星[图:./asstes/tarot/17.png]",
+      "月亮[图:./asstes/tarot/18.png]",
+      "太阳[图:./asstes/tarot/19.png]",
+      "审判[图:./asstes/tarot/20.png]",
+      "世界[图:./asstes/tarot/21.png]"
+    ]
+
+    
+  }
