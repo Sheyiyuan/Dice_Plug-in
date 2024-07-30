@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Combat&Chases Assist System
-// @author       社亦园 冰红茶
-// @version      0.3.0
+// @author       冰红茶 社亦园
+// @version      1.0.0
 // @description  一款COC战斗与追逐辅助系统
 // @timestamp    1717474718
 // 2024-06-04 12:18:38
@@ -728,7 +728,6 @@ cmdSetNpc.solve = (ctx, msg, cmdArgs) => {
         transfer += '\n' + transferTemp[0];
         seal.vars.strSet(ctx, `$gCCAS单位数据录入`, transfer);
         let CCCharacters = parseUserData(transfer);
-        console.log(transfer);
         seal.replyToSender(ctx, msg, `录入成功，${CCCharactersNew.length}名NPC已加入本次战斗。本次战斗目前共有${CCCharacters.length}名参与者。`);
         return seal.ext.newCmdExecuteResult(true);
       } else {
