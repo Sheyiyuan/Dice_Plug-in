@@ -694,6 +694,34 @@ if (!ext) {
   seal.ext.register(ext);
 }
 
+const cmdccas = seal.ext.newCmdItemInfo();
+cmdccas.name = 'ccas';
+cmdccas.help = `ccas是一款用于COC跑团中战斗和追逐的辅助插件，本插件指令集如下：
+.setnpc 用于批量添加角色至战斗或追逐中，具体格式详见.setnpc help
+.deletenpc 用于删除指定数量的单位，具体格式详见.deletenpc help
+.modify 用于修改指定单位的属性，具体格式详见.modify help
+.combat 用于查看战斗报表，具体格式详见.combat help
+.chase 用于查看追逐报表，具体格式详见.chase help
+.atk 用于对指定单位进行攻击，具体格式详见.atk help
+.skill 用于对指定单位使用战技，具体格式详见.skill help
+关于该插件的更多内容，详见https://github.com/Sheyiyuan/Dice_Plug-in/blob/main/%E6%8F%92%E4%BB%B6/CCAS/README.md`;
+cmdccas.solve = (ctx, msg, cmdArgs) => {
+    let val = cmdArgs.getArgN(1);
+    switch (val) {
+        case 'help': {
+            const ret = seal.ext.newCmdExecuteResult(true);
+            ret.showHelp = true;
+            return ret;
+        }
+        default: {
+            
+            return seal.ext.newCmdExecuteResult(true);
+        }
+    }
+};
+// 将命令注册到扩展中
+ext.cmdMap['ccas'] = cmdccas;   
+
 let arrCharacter = []
 const cmdSetNpc = seal.ext.newCmdItemInfo();
 cmdSetNpc.name = 'setnpc';
