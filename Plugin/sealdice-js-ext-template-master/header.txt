@@ -1,0 +1,10 @@
+// ==UserScript==
+// @name         KeMeow Goodfeel
+// @author       Sheyiyuan
+// @version      1.0.0
+// @description  KeMeow好感度系统
+// @timestamp    1724758743
+// 2024-08-27 19:39:03
+// @license      MIT
+// @homepageURL  https://github.com/sealdice/javascript
+// ==/UserScript==
