@@ -970,7 +970,7 @@ cmdCombat.solve = (ctx, msg, cmdArgs) => {
           } else {
             if (val === 'rank') {
               let rankCCCharacters = parseUserData(seal.vars.strGet(ctx, `$gCCAS单位数据录入`)[0]);
-              let ranktype = JSON.parse(seal.vars.strGet(ctx, '$gCCAS战斗规则录入')[0]);
+              let ranktype = seal.vars.strGet(ctx, '$gCCAS战斗规则录入')[0];
               let ruleCOC = ctx.group.cocRuleIndex;
               let rank_method = cmdArgs.getArgN(2);
               if (ranktype === 3) {
